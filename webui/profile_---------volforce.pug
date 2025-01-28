@@ -1,0 +1,8 @@
+//DATA//
+  score_data: DB.Find(refid, { collection: 'music' })
+-
+div(id="volforce-container")
+div(hidden id='score-pass') !{JSON.stringify(score_data)}
+
+
+script(src="static/asset/js/volforce.js") 
