@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Profile } from "../models/profile"
 import { MusicRecord } from "../models/music_record"
 import { ValgeneTicket } from "../models/valgene_ticket"
@@ -9,8 +10,10 @@ import { Item } from "../models/item"
 import { PREGENE, COURSES6 } from "../data/exg"
 import { textureslist } from "../data/webui"
 import * as fs from "fs"
+import * as path from "path"
+import * as fsp from "fs/promises"
 import { PNG } from "../webui/asset/js/pngjs/png.js"
-
+import * as recursive from "recursive-readdir"
 export const updateProfile = async (data: {
   refid: string
   name?: string
@@ -250,6 +253,7 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
   let newValgeneItemFiles = []
   let newAkanames = []
   let runErrors = []
+  let newJacketData = []
   let resourceJsonData = JSON.parse(
     U.DecodeString(await IO.ReadFile("webui/asset/json/data.json"), "utf8")
   )
@@ -302,16 +306,37 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
       version = ea3Config["ea3_conf"]["soft"]["ext"]["@content"]
     }
     let prevAssetMdb = []
-    if (IO.Exists("webui/asset/json/music_db.json")) {
-      prevAssetMdb = JSON.parse(
-        U.DecodeString(
-          await IO.ReadFile("webui/asset/json/music_db.json"),
-          "utf8"
-        )
-      )
-    }
-
+    // if (IO.Exists("webui/asset/json/music_db.json")) {
+    //   prevAssetMdb = JSON.parse(
+    //     U.DecodeString(
+    //       await IO.ReadFile("webui/asset/json/music_db.json"),
+    //       "utf8"
+    //     )
+    //   )
+    // }
     mdb.mdb.music.forEach((musicValue) => {
+      
+      const folderId = musicValue["@attr"].id.padStart(4, "0")
+
+
+
+      // if (
+      //   IO.Exists(U.GetConfig("sdvx_eg_root_dir") + "/data/music")
+      // ) {
+      //   let subBGFiles = await IO.ReadDir(
+      //     U.GetConfig("sdvx_eg_root_dir") + "/data/graphics/submonitor_bg"
+      //   )
+      //   for await (const subbg of subBGFiles) {
+      //     if (subbg.name.match(/^(subbg[_0-9]*)(\.png|\.jpg|\.mp4)/g)) {
+      //       let fileToWrite = await IO.ReadFile(
+      //         U.GetConfig("sdvx_eg_root_dir") +
+      //           "/data/graphics/submonitor_bg/" +
+      //           subbg.name
+      //       )
+      //     }
+      //   }
+      // }
+
       if (Object.keys(prevAssetMdb).length > 0) {
         if (
           prevAssetMdb["mdb"]["music"].find(
@@ -399,7 +424,6 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
           ])
         }
       }
-
       if (
         parseInt(musicValue.info.distribution_date["@content"][0]) >=
         parseInt(version.substring(0, 8))
@@ -980,169 +1004,170 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
   // Extract textures from ifs files using pngjs. Massive thanks to https://github.com/mon/ifstools
   console.log("Extracting textures from IFS files")
   let ifsSuccess = []
-  for (let listIter = 0; listIter < textureslist.length; listIter++) {
-    let manifestJson = {}
-    let bufOffset = 0
-    let magic = "6CAD8F89"
-    console.log(textureslist[listIter]["file"] + ":")
-    let ifsBuffer = await IO.ReadFile(
-      U.GetConfig("sdvx_eg_root_dir") + textureslist[listIter].file,
-      { flag: "r" }
-    )
-    if (
-      !fs.existsSync(
-        "plugins/sdvx@asphyxia/webui/asset/" +
-          textureslist[listIter].asset_folder
-      )
-    ) {
-      fs.mkdirSync(
-        "plugins/sdvx@asphyxia/webui/asset/" +
-          textureslist[listIter].asset_folder
-      )
-    }
-    let header = Buffer.from(ifsBuffer.buffer.slice(0, 36))
-    let sig = header.readUInt32BE().toString(16).toUpperCase()
-    bufOffset += 4
-    if (sig === magic) {
-      bufOffset += 12
-      let manifest_end = ifsBuffer.readUInt32BE(bufOffset)
-      bufOffset += 4
-      let md5_hash = ifsBuffer.toString("hex", bufOffset, bufOffset + 16)
-      bufOffset += 16
-      if (md5_hash === textureslist[listIter].md5) {
-        for (
-          let texIter = 0;
-          texIter < textureslist[listIter]["textures"].length;
-          texIter++
-        ) {
-          let tdFileName = textureslist[listIter]["textures"][texIter][0]
-          let tdOffset = parseInt(
-            textureslist[listIter]["textures"][texIter][1].toString()
-          )
-          let tdSize = parseInt(
-            textureslist[listIter]["textures"][texIter][2].toString()
-          )
-          let tdUvrect = textureslist[listIter]["textures"][texIter][3]
-          let tdImgRect = textureslist[listIter]["textures"][texIter][4]
+  // for (let listIter = 0; listIter < textureslist.length; listIter++) {
+  //   let manifestJson = {}
+  //   let bufOffset = 0
+  //   let magic = "6CAD8F89"
+  //   console.log(textureslist[listIter]["file"] + ":")
+  //   let ifsBuffer = await IO.ReadFile(
+  //     U.GetConfig("sdvx_eg_root_dir") + textureslist[listIter].file,
+  //     { flag: "r" }
+  //   )
+  //   if (
+  //     !fs.existsSync(
+  //       "plugins/sdvx@asphyxia/webui/asset/" +
+  //         textureslist[listIter].asset_folder
+  //     )
+  //   ) {
+  //     fs.mkdirSync(
+  //       "plugins/sdvx@asphyxia/webui/asset/" +
+  //         textureslist[listIter].asset_folder,
+  //       { recursive: true }
+  //     )
+  //   }
+  //   let header = Buffer.from(ifsBuffer.buffer.slice(0, 36))
+  //   let sig = header.readUInt32BE().toString(16).toUpperCase()
+  //   bufOffset += 4
+  //   if (sig === magic) {
+  //     bufOffset += 12
+  //     let manifest_end = ifsBuffer.readUInt32BE(bufOffset)
+  //     bufOffset += 4
+  //     let md5_hash = ifsBuffer.toString("hex", bufOffset, bufOffset + 16)
+  //     bufOffset += 16
+  //     if (md5_hash === textureslist[listIter].md5) {
+  //       for (
+  //         let texIter = 0;
+  //         texIter < textureslist[listIter]["textures"].length;
+  //         texIter++
+  //       ) {
+  //         let tdFileName = textureslist[listIter]["textures"][texIter][0]
+  //         let tdOffset = parseInt(
+  //           textureslist[listIter]["textures"][texIter][1].toString()
+  //         )
+  //         let tdSize = parseInt(
+  //           textureslist[listIter]["textures"][texIter][2].toString()
+  //         )
+  //         let tdUvrect = textureslist[listIter]["textures"][texIter][3]
+  //         let tdImgRect = textureslist[listIter]["textures"][texIter][4]
 
-          let imgBufferHead = Buffer.from(
-            ifsBuffer.buffer.slice(
-              manifest_end + tdOffset,
-              manifest_end + tdOffset + 8
-            )
-          )
-          let imgBufferHeadOff = 0
-          let imgBuffer = Buffer.from(
-            ifsBuffer.buffer.slice(
-              manifest_end + tdOffset + 8,
-              manifest_end + tdOffset + tdSize
-            )
-          )
-          let imgBufferOff = 0
-          let imgUncompressedSize = imgBufferHead.readUInt32BE(imgBufferHeadOff)
-          imgBufferHeadOff += 4
-          let imgCompressedSize = imgBufferHead.readUInt32BE(imgBufferHeadOff)
-          imgBufferHeadOff += 4
+  //         let imgBufferHead = Buffer.from(
+  //           ifsBuffer.buffer.slice(
+  //             manifest_end + tdOffset,
+  //             manifest_end + tdOffset + 8
+  //           )
+  //         )
+  //         let imgBufferHeadOff = 0
+  //         let imgBuffer = Buffer.from(
+  //           ifsBuffer.buffer.slice(
+  //             manifest_end + tdOffset + 8,
+  //             manifest_end + tdOffset + tdSize
+  //           )
+  //         )
+  //         let imgBufferOff = 0
+  //         let imgUncompressedSize = imgBufferHead.readUInt32BE(imgBufferHeadOff)
+  //         imgBufferHeadOff += 4
+  //         let imgCompressedSize = imgBufferHead.readUInt32BE(imgBufferHeadOff)
+  //         imgBufferHeadOff += 4
 
-          // Decompression algorithm & code from ifstools/handlers/lz77.py
-          let decompressed = []
-          let contLoop = true
-          let diff, flag, w, position, length
-          while (contLoop) {
-            flag = imgBuffer.readUInt8(imgBufferOff)
-            imgBufferOff++
-            for (let i = 0; i < 8; i++) {
-              if (((flag >> i) & 1) === 1) {
-                decompressed.push(imgBuffer.readUInt8(imgBufferOff))
-                imgBufferOff++
-              } else {
-                w = imgBuffer.readUInt16BE(imgBufferOff)
-                imgBufferOff += 2
-                position = w >> 4
-                length = (w & 0x0f) + 3
-                if (position === 0) {
-                  contLoop = false
-                  break
-                }
-                if (position > decompressed.length) {
-                  diff = 0
-                  diff = position - decompressed.length
-                  diff = Math.min(diff, length)
-                  for (let e2p = 0; e2p < diff; e2p++) {
-                    decompressed.push(0)
-                  }
-                  length -= diff
-                }
-                if (-position + length < 0) {
-                  decompressed.push(
-                    ...decompressed.slice(
-                      decompressed.length + -position,
-                      decompressed.length + (-position + length)
-                    )
-                  )
-                } else {
-                  for (let loop = 0; loop < length; loop++) {
-                    decompressed.push(
-                      decompressed[decompressed.length + -position]
-                    )
-                  }
-                }
-              }
-            }
-          }
+  //         // Decompression algorithm & code from ifstools/handlers/lz77.py
+  //         let decompressed = []
+  //         let contLoop = true
+  //         let diff, flag, w, position, length
+  //         while (contLoop) {
+  //           flag = imgBuffer.readUInt8(imgBufferOff)
+  //           imgBufferOff++
+  //           for (let i = 0; i < 8; i++) {
+  //             if (((flag >> i) & 1) === 1) {
+  //               decompressed.push(imgBuffer.readUInt8(imgBufferOff))
+  //               imgBufferOff++
+  //             } else {
+  //               w = imgBuffer.readUInt16BE(imgBufferOff)
+  //               imgBufferOff += 2
+  //               position = w >> 4
+  //               length = (w & 0x0f) + 3
+  //               if (position === 0) {
+  //                 contLoop = false
+  //                 break
+  //               }
+  //               if (position > decompressed.length) {
+  //                 diff = 0
+  //                 diff = position - decompressed.length
+  //                 diff = Math.min(diff, length)
+  //                 for (let e2p = 0; e2p < diff; e2p++) {
+  //                   decompressed.push(0)
+  //                 }
+  //                 length -= diff
+  //               }
+  //               if (-position + length < 0) {
+  //                 decompressed.push(
+  //                   ...decompressed.slice(
+  //                     decompressed.length + -position,
+  //                     decompressed.length + (-position + length)
+  //                   )
+  //                 )
+  //               } else {
+  //                 for (let loop = 0; loop < length; loop++) {
+  //                   decompressed.push(
+  //                     decompressed[decompressed.length + -position]
+  //                   )
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
 
-          // Swap red and blue data (RGBA -> BGRA)
-          if (decompressed.length === imgUncompressedSize) {
-            for (let decCtr = 0; decCtr < decompressed.length; decCtr += 4) {
-              decompressed[decCtr + 2] = [
-                decompressed[decCtr],
-                (decompressed[decCtr] = decompressed[decCtr + 2]),
-              ][0]
-            }
+  //         // Swap red and blue data (RGBA -> BGRA)
+  //         if (decompressed.length === imgUncompressedSize) {
+  //           for (let decCtr = 0; decCtr < decompressed.length; decCtr += 4) {
+  //             decompressed[decCtr + 2] = [
+  //               decompressed[decCtr],
+  //               (decompressed[decCtr] = decompressed[decCtr + 2]),
+  //             ][0]
+  //           }
 
-            let pngf = new PNG({
-              width:
-                Math.floor(tdImgRect[1] / 2) - Math.floor(tdImgRect[0] / 2),
-              height:
-                Math.floor(tdImgRect[3] / 2) - Math.floor(tdImgRect[2] / 2),
-              bitDepth: 8,
-              colorType: 6,
-              inputHasAlpha: true,
-            })
+  //           let pngf = new PNG({
+  //             width:
+  //               Math.floor(tdImgRect[1] / 2) - Math.floor(tdImgRect[0] / 2),
+  //             height:
+  //               Math.floor(tdImgRect[3] / 2) - Math.floor(tdImgRect[2] / 2),
+  //             bitDepth: 8,
+  //             colorType: 6,
+  //             inputHasAlpha: true,
+  //           })
 
-            pngf.data = Buffer.from(decompressed)
-            const outputStream = await fs.createWriteStream(
-              "plugins/sdvx@asphyxia/webui/asset/" +
-                textureslist[listIter].asset_folder +
-                "/" +
-                tdFileName
-            )
-            await pngf.pack().pipe(outputStream)
-            console.log(" - " + tdFileName + " created successfully.")
-            ifsSuccess.push(textureslist[listIter].file + " - " + tdFileName)
-          } else {
-            console.log("Decompression mismatch.")
-            runErrors.push(
-              "[ifs] decompression mismatch for " +
-                textureslist[listIter]["file"] +
-                "/" +
-                tdFileName
-            )
-          }
-        }
-      } else {
-        console.log("MD5 mismatch.")
-        runErrors.push("[ifs] MD5 mismatch - " + textureslist[listIter].file)
-      }
-    } else {
-      console.log("IFS file unsupported/invalid.")
-      runErrors.push(
-        '[ifs] IFS file "' +
-          textureslist[listIter].file +
-          '" unsupported/invalid.'
-      )
-    }
-  }
+  //           pngf.data = Buffer.from(decompressed)
+  //           const outputStream = await fs.createWriteStream(
+  //             "plugins/sdvx@asphyxia/webui/asset/" +
+  //               textureslist[listIter].asset_folder +
+  //               "/" +
+  //               tdFileName
+  //           )
+  //           await pngf.pack().pipe(outputStream)
+  //           console.log(" - " + tdFileName + " created successfully.")
+  //           ifsSuccess.push(textureslist[listIter].file + " - " + tdFileName)
+  //         } else {
+  //           console.log("Decompression mismatch.")
+  //           runErrors.push(
+  //             "[ifs] decompression mismatch for " +
+  //               textureslist[listIter]["file"] +
+  //               "/" +
+  //               tdFileName
+  //           )
+  //         }
+  //       }
+  //     } else {
+  //       console.log("MD5 mismatch.")
+  //       runErrors.push("[ifs] MD5 mismatch - " + textureslist[listIter].file)
+  //     }
+  //   } else {
+  //     console.log("IFS file unsupported/invalid.")
+  //     runErrors.push(
+  //       '[ifs] IFS file "' +
+  //         textureslist[listIter].file +
+  //         '" unsupported/invalid.'
+  //     )
+  //   }
+  // }
 
   console.log("Updating course_data.json")
   let courseDataUpdateSuccess = false
@@ -1166,6 +1191,32 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
     JSON.stringify(courseData, null, 4)
   )
 
+
+  try{
+    const files = await recursive(U.GetConfig("sdvx_eg_root_dir") + "/data/music");
+    const distDir = "plugins/sdvx_dev@asphyxia/webui/asset/jacket/"
+    const filteredFiles = files.filter(
+    (file) => path.extname(file) === ".png" && file.includes("jk_") && !file.includes("_b") && !file.includes("_s")
+  );
+
+  await fsp.mkdir(distDir, { recursive: true });
+  for (const file of filteredFiles) {
+    try{
+      await fsp.copyFile(file, distDir + path.basename(file))
+    }catch (err) {
+      console.log("continuing", err);
+    }
+  }
+
+  console.log("added jacket files at", distDir)
+  
+  // const folder = folders.filter(dir => dir.isDirectory() && dir.normalize.startsWith(folderId + "_")).map(dirent => dirent.name)
+  // .sort()[0]; // Take the first match
+  
+  // console.log(folder)
+}catch (error) {
+  console.error("Error:", error);
+}
   send.json({
     status: "ok",
     course: courseDataUpdateSuccess,

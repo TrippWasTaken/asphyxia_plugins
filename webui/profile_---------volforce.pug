@@ -1,6 +1,8 @@
 //DATA//
   score_data: DB.Find(refid, { collection: 'music' })
 -
+
+link(rel="stylesheet" href="static/asset/css/detail.css")
 div(id="volforce-container")
 div(hidden id='score-pass') !{JSON.stringify(score_data)}
 

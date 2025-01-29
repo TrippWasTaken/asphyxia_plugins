@@ -2,30 +2,30 @@ var diffName = ["NOV", "ADV", "EXH", "INF\nGRV\nHVN\nVVD\nXCD", "MXM"]
 var volforceArray = []
 var music_db, course_db, score_db, data_db, appeal_db, skill_title_db
 var profile_data, skill_data, course_data
+let volforceScores = []
 
-const volforceScores = []
 
 function calculateVolforce() {
-  console.log(score_db)
   for (var i in score_db) {
     var temp = singleScoreVolforce(score_db[i])
     temp = parseFloat(toFixed(temp, 1))
-    console.log("music_", music_db)
     let musicInfo = music_db["mdb"]["music"].filter(
       (object) => object["@id"] == score_db[i].mid
     )
     volforceArray.push(temp)
     volforceScores.push({
-      voldroce: temp,
+      volforce: temp,
       ...score_db[i],
-      musicInfo: musicInfo,
+      musicInfo: musicInfo[0],
     })
   }
   volforceArray.sort(function (a, b) {
     return b - a
   })
 
-  console.log(volforceScores)
+  volforceScores = volforceScores.sort((a,b)=> {
+    return b.volforce - a.volforce
+  }).slice(0,50)
 
   var VF = 0
   if (volforceArray.length > 50) {
@@ -166,4 +166,28 @@ $.when(
   })
 ).then(function () {
   const currentVF = calculateVolforce()
+}).then(()=> {
+  volforceScores.forEach(item => {
+    const jacketId = `jk_${item.musicInfo["@id"].toString().padStart(4, 0)}_1.png`
+    console.log(item)
+    $("#volforce-container").append(`
+    <div class='vf-score-container'>
+      <img src="static/asset/jacket/${jacketId}"></img>
+      <div class="vf-text-container">
+      <div class="vf-songname">
+      <span>
+      ${item.musicInfo.info.artist_name}
+      </span>
+      -
+      <span>
+        ${item.musicInfo.info.title_name}
+      </span>
+      </div>
+        <div class="vf-score">
+          <span class="vf-bold">Score:</span>
+        ${item.score}
+        </div>
+      </div>
+    </div>`)
+  })
 })
