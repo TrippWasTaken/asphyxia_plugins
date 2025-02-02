@@ -221,15 +221,11 @@ export const importMix = async (data: { json: string }) => {
     id,
     name: mix[1],
     creator: mix[2],
-    param: `{ "dbVer" : "${
-      mix[3]
-    }", "gene" : { "params" : "{ \\"minorVer\\" : \\"${
-      mix[4]
-    }\\", \\"seed\\" : ${mix[5]} }", "ver" : "${
-      mix[6]
-    }" }, "musics" : ${JSON.stringify(mdata)}, "voxdj" : { "params" : "${
-      mix[7]
-    }", "ver" : "${mix[8]}" } }`,
+    param: `{ "dbVer" : "${mix[3]
+      }", "gene" : { "params" : "{ \\"minorVer\\" : \\"${mix[4]
+      }\\", \\"seed\\" : ${mix[5]} }", "ver" : "${mix[6]
+      }" }, "musics" : ${JSON.stringify(mdata)}, "voxdj" : { "params" : "${mix[7]
+      }", "ver" : "${mix[8]}" } }`,
     jacket: 0,
     tag: 1,
   })
@@ -315,7 +311,7 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
     //   )
     // }
     mdb.mdb.music.forEach((musicValue) => {
-      
+
       const folderId = musicValue["@attr"].id.padStart(4, "0")
 
 
@@ -345,19 +341,19 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
         ) {
           console.log(
             "New song added to json: " +
-              musicValue.info.title_name["@content"] +
-              " (" +
-              musicValue.info.distribution_date["@content"] +
-              ")"
+            musicValue.info.title_name["@content"] +
+            " (" +
+            musicValue.info.distribution_date["@content"] +
+            ")"
           )
           newJsonSongs.push([
             musicValue["@attr"].id,
             "[" +
-              musicValue.info.distribution_date["@content"] +
-              " | " +
-              musicValue["@attr"].id +
-              "] " +
-              musicValue.info.title_name["@content"],
+            musicValue.info.distribution_date["@content"] +
+            " | " +
+            musicValue["@attr"].id +
+            "] " +
+            musicValue.info.title_name["@content"],
           ])
         }
 
@@ -371,56 +367,56 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
           if (musicValue.info.inf_ver["@content"] == "6") {
             console.log(
               "New XCD difficulty song: " +
-                musicValue.info.title_name["@content"] +
-                " (" +
-                musicValue.info.distribution_date["@content"] +
-                ")"
+              musicValue.info.title_name["@content"] +
+              " (" +
+              musicValue.info.distribution_date["@content"] +
+              ")"
             )
             newXCDSongs.push([
               musicValue["@attr"].id,
               "[" +
-                musicValue.info.distribution_date["@content"] +
-                " | " +
-                musicValue["@attr"].id +
-                "] " +
-                musicValue.info.title_name["@content"],
+              musicValue.info.distribution_date["@content"] +
+              " | " +
+              musicValue["@attr"].id +
+              "] " +
+              musicValue.info.title_name["@content"],
             ])
           }
         }
       } else {
         console.log(
           "New song added to json: " +
-            musicValue.info.title_name["@content"] +
-            " (" +
-            musicValue.info.distribution_date["@content"] +
-            ")"
+          musicValue.info.title_name["@content"] +
+          " (" +
+          musicValue.info.distribution_date["@content"] +
+          ")"
         )
         newJsonSongs.push([
           musicValue["@attr"].id,
           "[" +
-            musicValue.info.distribution_date["@content"] +
-            " | " +
-            musicValue["@attr"].id +
-            "] " +
-            musicValue.info.title_name["@content"],
+          musicValue.info.distribution_date["@content"] +
+          " | " +
+          musicValue["@attr"].id +
+          "] " +
+          musicValue.info.title_name["@content"],
         ])
 
         if (musicValue.info.inf_ver["@content"] == "6") {
           console.log(
             "New XCD difficulty song: " +
-              musicValue.info.title_name["@content"] +
-              " (" +
-              musicValue.info.distribution_date["@content"] +
-              ")"
+            musicValue.info.title_name["@content"] +
+            " (" +
+            musicValue.info.distribution_date["@content"] +
+            ")"
           )
           newXCDSongs.push([
             musicValue["@attr"].id,
             "[" +
-              musicValue.info.distribution_date["@content"] +
-              " | " +
-              musicValue["@attr"].id +
-              "] " +
-              musicValue.info.title_name["@content"],
+            musicValue.info.distribution_date["@content"] +
+            " | " +
+            musicValue["@attr"].id +
+            "] " +
+            musicValue.info.title_name["@content"],
           ])
         }
       }
@@ -430,21 +426,21 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
       ) {
         console.log(
           "Found new song for version " +
-            version +
-            ": " +
-            musicValue.info.title_name["@content"] +
-            " (" +
-            musicValue.info.distribution_date["@content"] +
-            ")"
+          version +
+          ": " +
+          musicValue.info.title_name["@content"] +
+          " (" +
+          musicValue.info.distribution_date["@content"] +
+          ")"
         )
         newVersionSongs.push([
           musicValue["@attr"].id,
           "[" +
-            musicValue.info.distribution_date["@content"] +
-            " | " +
-            musicValue["@attr"].id +
-            "] " +
-            musicValue.info.title_name["@content"],
+          musicValue.info.distribution_date["@content"] +
+          " | " +
+          musicValue["@attr"].id +
+          "] " +
+          musicValue.info.title_name["@content"],
         ])
       }
 
@@ -493,8 +489,8 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
               "#text":
                 musicValue.difficulty.maximum != undefined
                   ? musicValue.difficulty.maximum.difnum[
-                      "@content"
-                    ][0].toString()
+                    "@content"
+                  ][0].toString()
                   : "0",
             },
           },
@@ -504,8 +500,8 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
               "#text":
                 musicValue.difficulty.infinite != undefined
                   ? musicValue.difficulty.infinite.difnum[
-                      "@content"
-                    ][0].toString()
+                    "@content"
+                  ][0].toString()
                   : "0",
             },
           },
@@ -543,19 +539,19 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
     for await (const nemsys of nemsysFiles) {
       let fileToWrite = await IO.ReadFile(
         U.GetConfig("sdvx_eg_root_dir") +
-          "/data/graphics/game_nemsys/" +
-          nemsys.name
+        "/data/graphics/game_nemsys/" +
+        nemsys.name
       )
       if (
         !IO.Exists(
           "webui/asset/nemsys/" +
-            nemsys.name.substring(0, nemsys.name.length - 4) +
-            ".png"
+          nemsys.name.substring(0, nemsys.name.length - 4) +
+          ".png"
         ) &&
         !IO.Exists(
           "webui/asset/nemsys/" +
-            nemsys.name.substring(0, nemsys.name.length - 4) +
-            ".jpg"
+          nemsys.name.substring(0, nemsys.name.length - 4) +
+          ".jpg"
         )
       ) {
         console.log("[nemsys] copying " + nemsys.name)
@@ -569,7 +565,7 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
           nemsysId &&
           ![8, 9, 10, 11].includes(nemsysId) &&
           resourceJsonData.nemsys.find((nem) => nem.value == nemsysId) ==
-            undefined
+          undefined
         ) {
           console.log("[nemsys] adding to json: " + nemsys.name)
           resourceJsonData.nemsys.push({ value: nemsysId, name: nemsys.name })
@@ -597,24 +593,24 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
       if (subbg.name.match(/^(subbg[_0-9]*)(\.png|\.jpg|\.mp4)/g)) {
         let fileToWrite = await IO.ReadFile(
           U.GetConfig("sdvx_eg_root_dir") +
-            "/data/graphics/submonitor_bg/" +
-            subbg.name
+          "/data/graphics/submonitor_bg/" +
+          subbg.name
         )
         if (
           !IO.Exists(
             "webui/asset/submonitor_bg/" +
-              subbg.name.substring(0, subbg.name.length - 4) +
-              ".png"
+            subbg.name.substring(0, subbg.name.length - 4) +
+            ".png"
           ) &&
           !IO.Exists(
             "webui/asset/submonitor_bg/" +
-              subbg.name.substring(0, subbg.name.length - 4) +
-              ".jpg"
+            subbg.name.substring(0, subbg.name.length - 4) +
+            ".jpg"
           ) &&
           !IO.Exists(
             "webui/asset/submonitor_bg/" +
-              subbg.name.substring(0, subbg.name.length - 4) +
-              ".mp4"
+            subbg.name.substring(0, subbg.name.length - 4) +
+            ".mp4"
           )
         ) {
           console.log("[subbg] copying " + subbg.name)
@@ -638,12 +634,12 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
           if (foundSubbg == -1) {
             console.log(
               "[subbg] adding " +
-                subbgId +
-                " - " +
-                subbgName +
-                " (" +
-                subbgType +
-                ")"
+              subbgId +
+              " - " +
+              subbgName +
+              " (" +
+              subbgType +
+              ")"
             )
             resourceJsonData.subbg.push({
               value: subbgId,
@@ -680,8 +676,8 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
             let bufOffset = 4
             let s3pBuffer = await IO.ReadFile(
               U.GetConfig("sdvx_eg_root_dir") +
-                "/data/sound/custom/" +
-                bgm.name,
+              "/data/sound/custom/" +
+              bgm.name,
               { flag: "r" }
             )
             let fileMagic = s3pBuffer.toString("utf8", 0, 4)
@@ -795,9 +791,9 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
         )
         let fileToWrite = await IO.ReadFile(
           U.GetConfig("sdvx_eg_root_dir") +
-            "/data/graphics/chat_stamp/" +
-            chatStamp.filename["@content"] +
-            ".png"
+          "/data/graphics/chat_stamp/" +
+          chatStamp.filename["@content"] +
+          ".png"
         )
         IO.WriteFile(
           "webui/asset/chat_stamp/" + chatStamp.filename["@content"] + ".png",
@@ -833,19 +829,19 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
       ) {
         let fileToWrite = await IO.ReadFile(
           U.GetConfig("sdvx_eg_root_dir") +
-            "/data/graphics/valgene_item/" +
-            valgeneItem.name
+          "/data/graphics/valgene_item/" +
+          valgeneItem.name
         )
         if (
           !IO.Exists(
             "webui/asset/valgene_item/" +
-              valgeneItem.name.substring(0, valgeneItem.name.length - 4) +
-              ".png"
+            valgeneItem.name.substring(0, valgeneItem.name.length - 4) +
+            ".png"
           ) &&
           !IO.Exists(
             "webui/asset/valgene_item/" +
-              valgeneItem.name.substring(0, valgeneItem.name.length - 4) +
-              ".jpg"
+            valgeneItem.name.substring(0, valgeneItem.name.length - 4) +
+            ".jpg"
           )
         ) {
           console.log("[valgene_item] copying " + valgeneItem.name)
@@ -937,9 +933,9 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
       ) {
         console.log(
           "[ap_card] adding to json: " +
-            apCard["@attr"].id +
-            " - " +
-            apCard.info["title"]["@content"]
+          apCard["@attr"].id +
+          " - " +
+          apCard.info["title"]["@content"]
         )
         apCardJsonData.appeal_card_data.card.push({
           "@id": apCard["@attr"].id,
@@ -950,11 +946,11 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
         })
         newAPCardData.push(
           apCard["@attr"].id +
-            ": " +
-            apCard.info["texture"]["@content"] +
-            "(" +
-            apCard.info["title"]["@content"] +
-            ")"
+          ": " +
+          apCard.info["texture"]["@content"] +
+          "(" +
+          apCard.info["title"]["@content"] +
+          ")"
         )
       }
       if (
@@ -970,9 +966,9 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
         )
         let fileToWrite = await IO.ReadFile(
           U.GetConfig("sdvx_eg_root_dir") +
-            "/data/graphics/ap_card/" +
-            apCard.info["texture"]["@content"] +
-            ".png"
+          "/data/graphics/ap_card/" +
+          apCard.info["texture"]["@content"] +
+          ".png"
         )
         IO.WriteFile(
           "webui/asset/ap_card/" + apCard.info["texture"]["@content"] + ".png",
@@ -1004,170 +1000,170 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
   // Extract textures from ifs files using pngjs. Massive thanks to https://github.com/mon/ifstools
   console.log("Extracting textures from IFS files")
   let ifsSuccess = []
-  // for (let listIter = 0; listIter < textureslist.length; listIter++) {
-  //   let manifestJson = {}
-  //   let bufOffset = 0
-  //   let magic = "6CAD8F89"
-  //   console.log(textureslist[listIter]["file"] + ":")
-  //   let ifsBuffer = await IO.ReadFile(
-  //     U.GetConfig("sdvx_eg_root_dir") + textureslist[listIter].file,
-  //     { flag: "r" }
-  //   )
-  //   if (
-  //     !fs.existsSync(
-  //       "plugins/sdvx@asphyxia/webui/asset/" +
-  //         textureslist[listIter].asset_folder
-  //     )
-  //   ) {
-  //     fs.mkdirSync(
-  //       "plugins/sdvx@asphyxia/webui/asset/" +
-  //         textureslist[listIter].asset_folder,
-  //       { recursive: true }
-  //     )
-  //   }
-  //   let header = Buffer.from(ifsBuffer.buffer.slice(0, 36))
-  //   let sig = header.readUInt32BE().toString(16).toUpperCase()
-  //   bufOffset += 4
-  //   if (sig === magic) {
-  //     bufOffset += 12
-  //     let manifest_end = ifsBuffer.readUInt32BE(bufOffset)
-  //     bufOffset += 4
-  //     let md5_hash = ifsBuffer.toString("hex", bufOffset, bufOffset + 16)
-  //     bufOffset += 16
-  //     if (md5_hash === textureslist[listIter].md5) {
-  //       for (
-  //         let texIter = 0;
-  //         texIter < textureslist[listIter]["textures"].length;
-  //         texIter++
-  //       ) {
-  //         let tdFileName = textureslist[listIter]["textures"][texIter][0]
-  //         let tdOffset = parseInt(
-  //           textureslist[listIter]["textures"][texIter][1].toString()
-  //         )
-  //         let tdSize = parseInt(
-  //           textureslist[listIter]["textures"][texIter][2].toString()
-  //         )
-  //         let tdUvrect = textureslist[listIter]["textures"][texIter][3]
-  //         let tdImgRect = textureslist[listIter]["textures"][texIter][4]
+  for (let listIter = 0; listIter < textureslist.length; listIter++) {
+    let manifestJson = {}
+    let bufOffset = 0
+    let magic = "6CAD8F89"
+    console.log(textureslist[listIter]["file"] + ":")
+    let ifsBuffer = await IO.ReadFile(
+      U.GetConfig("sdvx_eg_root_dir") + textureslist[listIter].file,
+      { flag: "r" }
+    )
+    if (
+      !fs.existsSync(
+        "plugins/sdvx@asphyxia/webui/asset/" +
+        textureslist[listIter].asset_folder
+      )
+    ) {
+      fs.mkdirSync(
+        "plugins/sdvx@asphyxia/webui/asset/" +
+        textureslist[listIter].asset_folder,
+        { recursive: true }
+      )
+    }
+    let header = Buffer.from(ifsBuffer.buffer.slice(0, 36))
+    let sig = header.readUInt32BE().toString(16).toUpperCase()
+    bufOffset += 4
+    if (sig === magic) {
+      bufOffset += 12
+      let manifest_end = ifsBuffer.readUInt32BE(bufOffset)
+      bufOffset += 4
+      let md5_hash = ifsBuffer.toString("hex", bufOffset, bufOffset + 16)
+      bufOffset += 16
+      if (md5_hash === textureslist[listIter].md5) {
+        for (
+          let texIter = 0;
+          texIter < textureslist[listIter]["textures"].length;
+          texIter++
+        ) {
+          let tdFileName = textureslist[listIter]["textures"][texIter][0]
+          let tdOffset = parseInt(
+            textureslist[listIter]["textures"][texIter][1].toString()
+          )
+          let tdSize = parseInt(
+            textureslist[listIter]["textures"][texIter][2].toString()
+          )
+          let tdUvrect = textureslist[listIter]["textures"][texIter][3]
+          let tdImgRect = textureslist[listIter]["textures"][texIter][4]
 
-  //         let imgBufferHead = Buffer.from(
-  //           ifsBuffer.buffer.slice(
-  //             manifest_end + tdOffset,
-  //             manifest_end + tdOffset + 8
-  //           )
-  //         )
-  //         let imgBufferHeadOff = 0
-  //         let imgBuffer = Buffer.from(
-  //           ifsBuffer.buffer.slice(
-  //             manifest_end + tdOffset + 8,
-  //             manifest_end + tdOffset + tdSize
-  //           )
-  //         )
-  //         let imgBufferOff = 0
-  //         let imgUncompressedSize = imgBufferHead.readUInt32BE(imgBufferHeadOff)
-  //         imgBufferHeadOff += 4
-  //         let imgCompressedSize = imgBufferHead.readUInt32BE(imgBufferHeadOff)
-  //         imgBufferHeadOff += 4
+          let imgBufferHead = Buffer.from(
+            ifsBuffer.buffer.slice(
+              manifest_end + tdOffset,
+              manifest_end + tdOffset + 8
+            )
+          )
+          let imgBufferHeadOff = 0
+          let imgBuffer = Buffer.from(
+            ifsBuffer.buffer.slice(
+              manifest_end + tdOffset + 8,
+              manifest_end + tdOffset + tdSize
+            )
+          )
+          let imgBufferOff = 0
+          let imgUncompressedSize = imgBufferHead.readUInt32BE(imgBufferHeadOff)
+          imgBufferHeadOff += 4
+          let imgCompressedSize = imgBufferHead.readUInt32BE(imgBufferHeadOff)
+          imgBufferHeadOff += 4
 
-  //         // Decompression algorithm & code from ifstools/handlers/lz77.py
-  //         let decompressed = []
-  //         let contLoop = true
-  //         let diff, flag, w, position, length
-  //         while (contLoop) {
-  //           flag = imgBuffer.readUInt8(imgBufferOff)
-  //           imgBufferOff++
-  //           for (let i = 0; i < 8; i++) {
-  //             if (((flag >> i) & 1) === 1) {
-  //               decompressed.push(imgBuffer.readUInt8(imgBufferOff))
-  //               imgBufferOff++
-  //             } else {
-  //               w = imgBuffer.readUInt16BE(imgBufferOff)
-  //               imgBufferOff += 2
-  //               position = w >> 4
-  //               length = (w & 0x0f) + 3
-  //               if (position === 0) {
-  //                 contLoop = false
-  //                 break
-  //               }
-  //               if (position > decompressed.length) {
-  //                 diff = 0
-  //                 diff = position - decompressed.length
-  //                 diff = Math.min(diff, length)
-  //                 for (let e2p = 0; e2p < diff; e2p++) {
-  //                   decompressed.push(0)
-  //                 }
-  //                 length -= diff
-  //               }
-  //               if (-position + length < 0) {
-  //                 decompressed.push(
-  //                   ...decompressed.slice(
-  //                     decompressed.length + -position,
-  //                     decompressed.length + (-position + length)
-  //                   )
-  //                 )
-  //               } else {
-  //                 for (let loop = 0; loop < length; loop++) {
-  //                   decompressed.push(
-  //                     decompressed[decompressed.length + -position]
-  //                   )
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
+          // Decompression algorithm & code from ifstools/handlers/lz77.py
+          let decompressed = []
+          let contLoop = true
+          let diff, flag, w, position, length
+          while (contLoop) {
+            flag = imgBuffer.readUInt8(imgBufferOff)
+            imgBufferOff++
+            for (let i = 0; i < 8; i++) {
+              if (((flag >> i) & 1) === 1) {
+                decompressed.push(imgBuffer.readUInt8(imgBufferOff))
+                imgBufferOff++
+              } else {
+                w = imgBuffer.readUInt16BE(imgBufferOff)
+                imgBufferOff += 2
+                position = w >> 4
+                length = (w & 0x0f) + 3
+                if (position === 0) {
+                  contLoop = false
+                  break
+                }
+                if (position > decompressed.length) {
+                  diff = 0
+                  diff = position - decompressed.length
+                  diff = Math.min(diff, length)
+                  for (let e2p = 0; e2p < diff; e2p++) {
+                    decompressed.push(0)
+                  }
+                  length -= diff
+                }
+                if (-position + length < 0) {
+                  decompressed.push(
+                    ...decompressed.slice(
+                      decompressed.length + -position,
+                      decompressed.length + (-position + length)
+                    )
+                  )
+                } else {
+                  for (let loop = 0; loop < length; loop++) {
+                    decompressed.push(
+                      decompressed[decompressed.length + -position]
+                    )
+                  }
+                }
+              }
+            }
+          }
 
-  //         // Swap red and blue data (RGBA -> BGRA)
-  //         if (decompressed.length === imgUncompressedSize) {
-  //           for (let decCtr = 0; decCtr < decompressed.length; decCtr += 4) {
-  //             decompressed[decCtr + 2] = [
-  //               decompressed[decCtr],
-  //               (decompressed[decCtr] = decompressed[decCtr + 2]),
-  //             ][0]
-  //           }
+          // Swap red and blue data (RGBA -> BGRA)
+          if (decompressed.length === imgUncompressedSize) {
+            for (let decCtr = 0; decCtr < decompressed.length; decCtr += 4) {
+              decompressed[decCtr + 2] = [
+                decompressed[decCtr],
+                (decompressed[decCtr] = decompressed[decCtr + 2]),
+              ][0]
+            }
 
-  //           let pngf = new PNG({
-  //             width:
-  //               Math.floor(tdImgRect[1] / 2) - Math.floor(tdImgRect[0] / 2),
-  //             height:
-  //               Math.floor(tdImgRect[3] / 2) - Math.floor(tdImgRect[2] / 2),
-  //             bitDepth: 8,
-  //             colorType: 6,
-  //             inputHasAlpha: true,
-  //           })
+            let pngf = new PNG({
+              width:
+                Math.floor(tdImgRect[1] / 2) - Math.floor(tdImgRect[0] / 2),
+              height:
+                Math.floor(tdImgRect[3] / 2) - Math.floor(tdImgRect[2] / 2),
+              bitDepth: 8,
+              colorType: 6,
+              inputHasAlpha: true,
+            })
 
-  //           pngf.data = Buffer.from(decompressed)
-  //           const outputStream = await fs.createWriteStream(
-  //             "plugins/sdvx@asphyxia/webui/asset/" +
-  //               textureslist[listIter].asset_folder +
-  //               "/" +
-  //               tdFileName
-  //           )
-  //           await pngf.pack().pipe(outputStream)
-  //           console.log(" - " + tdFileName + " created successfully.")
-  //           ifsSuccess.push(textureslist[listIter].file + " - " + tdFileName)
-  //         } else {
-  //           console.log("Decompression mismatch.")
-  //           runErrors.push(
-  //             "[ifs] decompression mismatch for " +
-  //               textureslist[listIter]["file"] +
-  //               "/" +
-  //               tdFileName
-  //           )
-  //         }
-  //       }
-  //     } else {
-  //       console.log("MD5 mismatch.")
-  //       runErrors.push("[ifs] MD5 mismatch - " + textureslist[listIter].file)
-  //     }
-  //   } else {
-  //     console.log("IFS file unsupported/invalid.")
-  //     runErrors.push(
-  //       '[ifs] IFS file "' +
-  //         textureslist[listIter].file +
-  //         '" unsupported/invalid.'
-  //     )
-  //   }
-  // }
+            pngf.data = Buffer.from(decompressed)
+            const outputStream = await fs.createWriteStream(
+              "plugins/sdvx@asphyxia/webui/asset/" +
+              textureslist[listIter].asset_folder +
+              "/" +
+              tdFileName
+            )
+            await pngf.pack().pipe(outputStream)
+            console.log(" - " + tdFileName + " created successfully.")
+            ifsSuccess.push(textureslist[listIter].file + " - " + tdFileName)
+          } else {
+            console.log("Decompression mismatch.")
+            runErrors.push(
+              "[ifs] decompression mismatch for " +
+              textureslist[listIter]["file"] +
+              "/" +
+              tdFileName
+            )
+          }
+        }
+      } else {
+        console.log("MD5 mismatch.")
+        runErrors.push("[ifs] MD5 mismatch - " + textureslist[listIter].file)
+      }
+    } else {
+      console.log("IFS file unsupported/invalid.")
+      runErrors.push(
+        '[ifs] IFS file "' +
+        textureslist[listIter].file +
+        '" unsupported/invalid.'
+      )
+    }
+  }
 
   console.log("Updating course_data.json")
   let courseDataUpdateSuccess = false
@@ -1192,31 +1188,24 @@ export const copyResourcesFromGame = async (data: {}, send: WebUISend) => {
   )
 
 
-  try{
+  try {
     const files = await recursive(U.GetConfig("sdvx_eg_root_dir") + "/data/music");
-    const distDir = "plugins/sdvx_dev@asphyxia/webui/asset/jacket/"
-    const filteredFiles = files.filter(
-    (file) => path.extname(file) === ".png" && file.includes("jk_") && !file.includes("_b") && !file.includes("_s")
-  );
+    const distDir = "plugins/sdvx@asphyxia/webui/asset/jacket/"
+    const filteredFiles = files.filter((file) => (/jk_\d{4}_1_s\.png$/.test(file)))
 
-  await fsp.mkdir(distDir, { recursive: true });
-  for (const file of filteredFiles) {
-    try{
-      await fsp.copyFile(file, distDir + path.basename(file))
-    }catch (err) {
-      console.log("continuing", err);
+    await fsp.mkdir(distDir, { recursive: true });
+    for (const file of filteredFiles) {
+      try {
+        await fsp.copyFile(file, distDir + path.basename(file))
+      } catch (err) {
+        console.log("continuing", err);
+      }
     }
-  }
 
-  console.log("added jacket files at", distDir)
-  
-  // const folder = folders.filter(dir => dir.isDirectory() && dir.normalize.startsWith(folderId + "_")).map(dirent => dirent.name)
-  // .sort()[0]; // Take the first match
-  
-  // console.log(folder)
-}catch (error) {
-  console.error("Error:", error);
-}
+    console.log("added jacket files at", distDir)
+  } catch (error) {
+    console.error("Error:", error);
+  }
   send.json({
     status: "ok",
     course: courseDataUpdateSuccess,
@@ -1365,9 +1354,9 @@ export const preGeneRoll = async (
         let randomItemIndex = Math.floor(Math.random() * unobtainedItems.length)
         console.log(
           "Rolled item id: " +
-            unobtainedItems[randomItemIndex] +
-            " | item type: " +
-            itemId[Object.keys(preGeneSet.items)[rollWhat]]
+          unobtainedItems[randomItemIndex] +
+          " | item type: " +
+          itemId[Object.keys(preGeneSet.items)[rollWhat]]
         )
         if (itemId[Object.keys(preGeneSet.items)[rollWhat]] == 17) {
           for (
@@ -1409,8 +1398,8 @@ export const preGeneRoll = async (
       } else {
         console.log(
           "No more " +
-            Object.keys(preGeneSet.items)[rollWhat] +
-            " items to get, will re-roll."
+          Object.keys(preGeneSet.items)[rollWhat] +
+          " items to get, will re-roll."
         )
       }
     }

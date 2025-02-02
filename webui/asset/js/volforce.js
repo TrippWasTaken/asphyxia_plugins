@@ -43,13 +43,9 @@ function calculateVolforce() {
 }
 
 function getSongLevel(musicid, type) {
-  //console.log(music_db["mdb"]["music"])
-  // console.log(musicid + " " + type);
-  // console.log(musicid)
   var result = music_db["mdb"]["music"].filter(
     (object) => object["@id"] == musicid
   )
-  // console.log(result[0]["difficulty"]["novice"]["difnum"]["#text"])
   if (result.length == 0) {
     return "1"
   }
@@ -168,11 +164,33 @@ $.when(
   const currentVF = calculateVolforce()
 }).then(()=> {
   volforceScores.forEach(item => {
-    const jacketId = `jk_${item.musicInfo["@id"].toString().padStart(4, 0)}_1.png`
+    const jacketId = `jk_${item.musicInfo["@id"].toString().padStart(4, 0)}_1_s.png`
+    const diffs = Object.keys(item.musicInfo.difficulty)
+
+    const getDiff = (type) => {
+      switch (type) {
+        case 0:
+            return "NOV";
+        case 1:
+            return "ADV";
+        case 2:
+            return "EXH";
+        case 3:
+          return "INF";
+        case 4:
+            return "MXM";
+    }
+    }
     console.log(item)
+    // diffs[item.type]
+    const diffText = getDiff(item.type)
+    const diffLevel = item.musicInfo.difficulty[diffs[item.type]]["difnum"]["#text"]
+    
+    
+
     $("#volforce-container").append(`
     <div class='vf-score-container'>
-      <img src="static/asset/jacket/${jacketId}"></img>
+      <img class="vf-score-jacket" src="static/asset/jacket/${jacketId}"></img>
       <div class="vf-text-container">
       <div class="vf-songname">
       <span>
@@ -181,6 +199,10 @@ $.when(
       -
       <span>
         ${item.musicInfo.info.title_name}
+      </span>
+      <span class="vf-diff">
+        <img class="vf-diff-name" src="static/asset/difficulty/level_small_${diffText}.png"></img>
+        <span class="vf-diff-level">${diffLevel}</span>
       </span>
       </div>
         <div class="vf-score">

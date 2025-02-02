@@ -80,10 +80,30 @@ table.is-center td {
   padding: 1rem;
   gap: 2rem;
 
-  img {
-    aspect-ratio: 1/1;
-    width: 200px;
-  }
+}
+
+.vf-score-jacket {
+  aspect-ratio: 1/1;
+  width: 128px;
+}
+
+.vf-diff-level {
+  position: absolute;
+  right: 1rem;
+  font-weight: bold;
+  font-size: 1.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+
+  text-shadow:
+    1px 1px 0 #000,
+    -1px 1px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000;
+}
+
+.vf-diff {
+  position: relative;
 }
 
 .vf-score {
