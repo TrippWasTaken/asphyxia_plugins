@@ -183,7 +183,7 @@ $.when(
     }
     console.log(item)
     // diffs[item.type]
-    const diffText = getDiff(item.type)
+    const diffText = getDiff(item.type).toLowerCase()
     const diffLevel = item.musicInfo.difficulty[diffs[item.type]]["difnum"]["#text"]
     
     
