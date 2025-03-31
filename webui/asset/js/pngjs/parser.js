@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-let constants = require("./constants");
-let CrcCalculator = require("./crc");
+let constants = require('./constants');
+let CrcCalculator = require('./crc');
 
 let Parser = (module.exports = function (options, dependencies) {
   this._options = options;
@@ -45,7 +45,7 @@ Parser.prototype._parseSignature = function (data) {
 
   for (let i = 0; i < signature.length; i++) {
     if (data[i] !== signature[i]) {
-      this.error(new Error("Invalid file signature"));
+      this.error(new Error('Invalid file signature'));
       return;
     }
   }
@@ -58,11 +58,11 @@ Parser.prototype._parseChunkBegin = function (data) {
 
   // chunk type
   let type = data.readUInt32BE(4);
-  let name = "";
+  let name = '';
   for (let i = 4; i < 8; i++) {
     const charCode = data[i];
     if (charCode < 65 || charCode > 122 || (charCode > 90 && charCode < 97)) {
-      this.error(new Error("Invalid chunk type"));
+      this.error(new Error('Invalid chunk type'));
       return;
     }
     name += String.fromCharCode(charCode);
@@ -76,7 +76,7 @@ Parser.prototype._parseChunkBegin = function (data) {
   //    safeToCopy = Boolean(data[7] & 0x20); // or unsafe
 
   if (!this._hasIHDR && type !== constants.TYPE_IHDR) {
-    this.error(new Error("Expected IHDR to be first chunk"));
+    this.error(new Error('Expected IHDR to be first chunk'));
     return;
   }
 
@@ -88,7 +88,7 @@ Parser.prototype._parseChunkBegin = function (data) {
   }
 
   if (!ancillary) {
-    this.error(new Error("Unsupported critical chunk type " + name));
+    this.error(new Error('Unsupported critical chunk type ' + name));
     return;
   }
 
@@ -109,7 +109,7 @@ Parser.prototype._parseChunkEnd = function (data) {
 
   // check CRC
   if (this._options.checkCRC && calcCrc !== fileCrc) {
-    this.error(new Error("Crc error - " + fileCrc + " - " + calcCrc));
+    this.error(new Error('Crc error - ' + fileCrc + ' - ' + calcCrc));
     return;
   }
 
@@ -144,23 +144,23 @@ Parser.prototype._parseIHDR = function (data) {
     depth !== 1 &&
     depth !== 16
   ) {
-    this.error(new Error("Unsupported bit depth " + depth));
+    this.error(new Error('Unsupported bit depth ' + depth));
     return;
   }
   if (!(colorType in constants.COLORTYPE_TO_BPP_MAP)) {
-    this.error(new Error("Unsupported color type"));
+    this.error(new Error('Unsupported color type'));
     return;
   }
   if (compr !== 0) {
-    this.error(new Error("Unsupported compression method"));
+    this.error(new Error('Unsupported compression method'));
     return;
   }
   if (filter !== 0) {
-    this.error(new Error("Unsupported filter method"));
+    this.error(new Error('Unsupported filter method'));
     return;
   }
   if (interlace !== 0 && interlace !== 1) {
-    this.error(new Error("Unsupported interlace method"));
+    this.error(new Error('Unsupported interlace method'));
     return;
   }
 
@@ -213,11 +213,11 @@ Parser.prototype._parseTRNS = function (data) {
   // palette
   if (this._colorType === constants.COLORTYPE_PALETTE_COLOR) {
     if (this._palette.length === 0) {
-      this.error(new Error("Transparency chunk must be after palette"));
+      this.error(new Error('Transparency chunk must be after palette'));
       return;
     }
     if (data.length > this._palette.length) {
-      this.error(new Error("More transparent colors than palette size"));
+      this.error(new Error('More transparent colors than palette size'));
       return;
     }
     for (let i = 0; i < data.length; i++) {
@@ -267,7 +267,7 @@ Parser.prototype._parseIDAT = function (length, data) {
     this._colorType === constants.COLORTYPE_PALETTE_COLOR &&
     this._palette.length === 0
   ) {
-    throw new Error("Expected palette not found");
+    throw new Error('Expected palette not found');
   }
 
   this.inflateData(data);

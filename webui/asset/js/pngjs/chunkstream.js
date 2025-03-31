@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-let util = require("util");
-let Stream = require("stream");
+let util = require('util');
+let Stream = require('stream');
 
 let ChunkStream = (module.exports = function () {
   Stream.call(this);
@@ -12,7 +12,7 @@ let ChunkStream = (module.exports = function () {
   this._reads = [];
   this._paused = false;
 
-  this._encoding = "utf8";
+  this._encoding = 'utf8';
   this.writable = true;
 });
 util.inherits(ChunkStream, Stream);
@@ -32,7 +32,7 @@ ChunkStream.prototype.read = function (length, callback) {
       if (this._paused && this._reads && this._reads.length > 0) {
         this._paused = false;
 
-        this.emit("drain");
+        this.emit('drain');
       }
     }.bind(this)
   );
@@ -40,7 +40,7 @@ ChunkStream.prototype.read = function (length, callback) {
 
 ChunkStream.prototype.write = function (data, encoding) {
   if (!this.writable) {
-    this.emit("error", new Error("Stream not writable"));
+    this.emit('error', new Error('Stream not writable'));
     return false;
   }
 
@@ -89,7 +89,7 @@ ChunkStream.prototype.destroySoon = ChunkStream.prototype.end;
 
 ChunkStream.prototype._end = function () {
   if (this._reads.length > 0) {
-    this.emit("error", new Error("Unexpected end of input"));
+    this.emit('error', new Error('Unexpected end of input'));
   }
 
   this.destroy();
@@ -104,7 +104,7 @@ ChunkStream.prototype.destroy = function () {
   this._reads = null;
   this._buffers = null;
 
-  this.emit("close");
+  this.emit('close');
 };
 
 ChunkStream.prototype._processReadAllowingLess = function (read) {
@@ -184,6 +184,6 @@ ChunkStream.prototype._process = function () {
       this._end();
     }
   } catch (ex) {
-    this.emit("error", ex);
+    this.emit('error', ex);
   }
 };

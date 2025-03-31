@@ -32,11 +32,11 @@ export interface Profile {
   effCLeft: number;
   effCRight: number;
   narrowDown: number;
-  
+
   bgm: number;
   subbg: number;
   nemsys: number;
-  
+
   stampA: number;
   stampB: number;
   stampC: number;

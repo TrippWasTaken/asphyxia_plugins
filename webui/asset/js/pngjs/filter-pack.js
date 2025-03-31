@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-let paethPredictor = require("./paeth-predictor");
+let paethPredictor = require('./paeth-predictor');
 
 function filterNone(pxData, pxPos, byteWidth, rawData, rawPos) {
   for (let x = 0; x < byteWidth; x++) {
@@ -129,12 +129,12 @@ let filterSums = {
 
 module.exports = function (pxData, width, height, options, bpp) {
   let filterTypes;
-  if (!("filterType" in options) || options.filterType === -1) {
+  if (!('filterType' in options) || options.filterType === -1) {
     filterTypes = [0, 1, 2, 3, 4];
-  } else if (typeof options.filterType === "number") {
+  } else if (typeof options.filterType === 'number') {
     filterTypes = [options.filterType];
   } else {
-    throw new Error("unrecognised filter types");
+    throw new Error('unrecognised filter types');
   }
 
   if (options.bitDepth === 16) {

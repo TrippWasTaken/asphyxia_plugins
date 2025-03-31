@@ -15,18 +15,18 @@ export const COURSE2 = [
       {
         no: 0,
         id: 2,
-        type: 0
+        type: 0,
       },
       {
         no: 1,
         id: 2,
-        type: 0
+        type: 0,
       },
       {
         no: 2,
         id: 2,
-        type: 0
+        type: 0,
       },
-    ]
+    ],
   },
 ];

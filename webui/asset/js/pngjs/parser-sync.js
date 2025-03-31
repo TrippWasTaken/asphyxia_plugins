@@ -1,21 +1,21 @@
-"use strict";
+'use strict';
 
 let hasSyncZlib = true;
-let zlib = require("zlib");
-let inflateSync = require("./sync-inflate");
+let zlib = require('zlib');
+let inflateSync = require('./sync-inflate');
 if (!zlib.deflateSync) {
   hasSyncZlib = false;
 }
-let SyncReader = require("./sync-reader");
-let FilterSync = require("./filter-parse-sync");
-let Parser = require("./parser");
-let bitmapper = require("./bitmapper");
-let formatNormaliser = require("./format-normaliser");
+let SyncReader = require('./sync-reader');
+let FilterSync = require('./filter-parse-sync');
+let Parser = require('./parser');
+let bitmapper = require('./bitmapper');
+let formatNormaliser = require('./format-normaliser');
 
 module.exports = function (buffer, options) {
   if (!hasSyncZlib) {
     throw new Error(
-      "To use the sync capability of this library in old node versions, please pin pngjs to v2.3.0"
+      'To use the sync capability of this library in old node versions, please pin pngjs to v2.3.0'
     );
   }
 
@@ -90,7 +90,7 @@ module.exports = function (buffer, options) {
   inflateData = null;
 
   if (!inflatedData || !inflatedData.length) {
-    throw new Error("bad png - invalid inflate data response");
+    throw new Error('bad png - invalid inflate data response');
   }
 
   let unfilteredData = FilterSync.process(inflatedData, metaData);

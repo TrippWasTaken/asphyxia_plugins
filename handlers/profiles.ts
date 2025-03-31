@@ -20,7 +20,7 @@ async function getAutomationMixes(params: Param[]) {
 
 function unlockNavigators(items: Partial<Item>[]) {
   for (let i = 0; i < 300; ++i) items.push({ type: 11, id: i, param: 15 });
-  console.log("Unlocking Navigators");
+  console.log('Unlocking Navigators');
   // 10 genesis card for MITSURU's voice
   items.push({ type: 4, id: 599, param: 10 });
   return items;
@@ -28,77 +28,83 @@ function unlockNavigators(items: Partial<Item>[]) {
 
 function unlockAppealCards(items: Partial<Item>[]) {
   for (let i = 0; i < 6000; ++i) items.push({ type: 1, id: i, param: 1 });
-  console.log("Unlocking Appeal Cards");
+  console.log('Unlocking Appeal Cards');
 
   return items;
 }
 
 function removeStampItems(items: Partial<Item>[]) {
-  let itemsToRemove = []
+  let itemsToRemove = [];
   for (let index in items) {
     if (items[index].type === 17 && items[index].id % 4 != 0) {
-      itemsToRemove.push(index)
+      itemsToRemove.push(index);
     }
   }
 
   for (let itemIndex in itemsToRemove.reverse()) {
-    items.splice(itemsToRemove[itemIndex], 1)
+    items.splice(itemsToRemove[itemIndex], 1);
   }
 
-  for (let x=0; x<items.length; x++) {
+  for (let x = 0; x < items.length; x++) {
     if (items[x].type === 17) {
-      items[x].id /= 4
+      items[x].id /= 4;
     }
   }
 
-  return items
+  return items;
 }
 
 export const loadScore: EPR = async (info, data, send) => {
-  console.log("Now loading score");
+  console.log('Now loading score');
   const version = Math.abs(getVersion(info));
-  console.log("Got version: " + version);
+  console.log('Got version: ' + version);
   let refid = $(data).str('refid', $(data).attr().dataid);
   if (version === 2) refid = $(data).str('dataid', '0');
   //console.log('loading score');
-  console.log("DataID:" + refid);
+  console.log('DataID:' + refid);
   if (!refid) return send.deny();
   console.log('Finding record');
   const records = await DB.Find<MusicRecord>(refid, { collection: 'music' });
 
-
   //console.log(version);
   if (version === 1) {
     return send.object({
-      music: records.map(r => (K.ATTR({ music_id: String(r.mid) }, {
-        type: (() => {
-          const records = [];
+      music: records.map(r =>
+        K.ATTR(
+          { music_id: String(r.mid) },
+          {
+            type: (() => {
+              const records = [];
 
-          for (let i = 1; i <= 3; i++) {
-            if (r.type != i) continue;
-            records.push(K.ATTR({
-              type_id: String(i),
-              score: String(r.score),
-              clear_type: String(r.clear),
-              score_grade: String(r.grade),
-              cnt: "0"
-            }));
+              for (let i = 1; i <= 3; i++) {
+                if (r.type != i) continue;
+                records.push(
+                  K.ATTR({
+                    type_id: String(i),
+                    score: String(r.score),
+                    clear_type: String(r.clear),
+                    score_grade: String(r.grade),
+                    cnt: '0',
+                  })
+                );
+              }
+
+              return records;
+            })(),
           }
-
-          return records;
-        })()
-      })))
+        )
+      ),
     });
   }
 
   if (version === 2) {
-    let temp = Array.from(records.values()).filter(r => (r.mid <= 554));
+    let temp = Array.from(records.values()).filter(r => r.mid <= 554);
     //console.log([...temp]);
     //return send.pugFile('templates/infiniteinfection/score.pug', {
     //      temp});
     return send.object(
       {
-        "new": {
+        new: {
           music: temp.map(r => ({
             music_id: K.ITEM('u32', r.mid),
             music_type: K.ITEM('u32', r.type),
@@ -109,9 +115,12 @@ export const loadScore: EPR = async (info, data, send) => {
             btn_rate: K.ITEM('u32', r.buttonRate),
             long_rate: K.ITEM('u32', r.longRate),
             vol_rate: K.ITEM('u32', r.volRate),
-          }))
-        }, old: {}
-      }, { rootName: "game" });
+          })),
+        },
+        old: {},
+      },
+      { rootName: 'game' }
+    );
   }
 
   if (version === 6) {
@@ -147,8 +156,7 @@ export const loadScore: EPR = async (info, data, send) => {
   }
 
   if (version === 4 || version === 3) {
-    let temp = Array.from(records.values()).filter(r => (r.mid <= 1368));
-
+    let temp = Array.from(records.values()).filter(r => r.mid <= 1368);
 
     return send.object({
       music: {
@@ -171,12 +179,10 @@ export const loadScore: EPR = async (info, data, send) => {
             0,
             0,
           ]),
-        })
-        ),
+        })),
       },
     });
   }
-
 
   return send.object({
     music: {
@@ -235,8 +241,12 @@ export const saveScore: EPR = async (info, data, send) => {
       };
 
       const score = $(data).attr().score ? parseInt($(data).attr().score) : 0;
-      const clear = $(data).attr().clear_type ? parseInt($(data).attr().clear_type) : 0;
-      const grade = $(data).attr().score_grade ? parseInt($(data).attr().score_grade) : 0;
+      const clear = $(data).attr().clear_type
+        ? parseInt($(data).attr().clear_type)
+        : 0;
+      const grade = $(data).attr().score_grade
+        ? parseInt($(data).attr().score_grade)
+        : 0;
       if (score > record.score) {
         record.score = score;
       }
@@ -256,8 +266,8 @@ export const saveScore: EPR = async (info, data, send) => {
     }
   }
 
-
-  if (version === -6) { // Using alternate scoring system after 20210831
+  if (version === -6) {
+    // Using alternate scoring system after 20210831
     const tracks = $(data).elements('track');
     for (const i of tracks) {
       const mid = i.number('music_id');
@@ -296,8 +306,6 @@ export const saveScore: EPR = async (info, data, send) => {
       record.clear = Math.max(i.number('clear_type', 0), record.clear);
       record.grade = Math.max(i.number('score_grade', 0), record.grade);
 
-
-
       await DB.Upsert<MusicRecord>(
         refid,
         { collection: 'music', mid, type },
@@ -307,11 +315,14 @@ export const saveScore: EPR = async (info, data, send) => {
     return send.success();
   }
 
-
-
   const mid = $(data).number('music_id');
   const type = $(data).number('music_type');
-  console.log("Saving score for version later than HH(include), ID:" + mid + " type:" + type);
+  console.log(
+    'Saving score for version later than HH(include), ID:' +
+      mid +
+      ' type:' +
+      type
+  );
   if (_.isNil(mid) || _.isNil(type)) return send.deny();
 
   const record = (await DB.FindOne<MusicRecord>(refid, {
@@ -345,8 +356,6 @@ export const saveScore: EPR = async (info, data, send) => {
 
   record.clear = Math.max($(data).number('clear_type', 0), record.clear);
   record.grade = Math.max($(data).number('score_grade', 0), record.grade);
-
-
 
   await DB.Upsert<MusicRecord>(
     refid,
@@ -406,10 +415,16 @@ export const save: EPR = async (info, data, send) => {
             headphone: $(data).number('headphone'),
             hiSpeed: $(data).number('hispeed'),
             appeal: $(data).number('appeal_id'),
-            boothFrame: [$(data).number('frame0'), $(data).number('frame1'), $(data).number('frame2'), $(data).number('frame3'), $(data).number('frame4')],
-            musicID: parseInt($(data).attr("last").music_id),
-            musicType: parseInt($(data).attr("last").music_type),
-            sortType: parseInt($(data).attr("last").sort_type),
+            boothFrame: [
+              $(data).number('frame0'),
+              $(data).number('frame1'),
+              $(data).number('frame2'),
+              $(data).number('frame3'),
+              $(data).number('frame4'),
+            ],
+            musicID: parseInt($(data).attr('last').music_id),
+            musicType: parseInt($(data).attr('last').music_type),
+            sortType: parseInt($(data).attr('last').sort_type),
             mUserCnt: $(data).number('m_user_cnt'),
           },
           $inc: {
@@ -465,7 +480,7 @@ export const save: EPR = async (info, data, send) => {
           weekCount: 1,
           weekPlayCount: 1,
           weekChain: 1,
-          maxWeekChain: 1
+          maxWeekChain: 1,
         },
       }
     );
@@ -507,44 +522,44 @@ export const save: EPR = async (info, data, send) => {
           weekCount: 1,
           weekPlayCount: 1,
           weekChain: 1,
-          maxWeekChain: 1
+          maxWeekChain: 1,
         },
       }
     );
   }
-  
+
   // New course saving function found in sdvx 20220214
   // Updated for God mode
   const course = $(data).element('course');
-  if(!_.isNil(course)){
-      const sid = course.number('ssnid');
-      const cid = course.number('crsid');
-      const stype = course.number('st');
-      const kacid = course.str('kac_id');
+  if (!_.isNil(course)) {
+    const sid = course.number('ssnid');
+    const cid = course.number('crsid');
+    const stype = course.number('st');
+    const kacid = course.str('kac_id');
 
-      if (!(_.isNil(sid) || _.isNil(cid))){
-        await DB.Upsert<CourseRecord>(
-          refid,
-          { collection: 'course', sid, cid, stype, version },
-          {
-            $set: {
-              kacId: kacid
-            },
-            $max: {
-              score: course.number('sc', 0),
-              exscore: course.number('ex', 0),
-              clear: course.number('ct', 0),
-              grade: course.number('gr', 0),
-              rate: course.number('ar', 0),
-            },
-            $inc: {
-              count: 1,
-            },
-          }
-        );
-      }
+    if (!(_.isNil(sid) || _.isNil(cid))) {
+      await DB.Upsert<CourseRecord>(
+        refid,
+        { collection: 'course', sid, cid, stype, version },
+        {
+          $set: {
+            kacId: kacid,
+          },
+          $max: {
+            score: course.number('sc', 0),
+            exscore: course.number('ex', 0),
+            clear: course.number('ct', 0),
+            grade: course.number('gr', 0),
+            rate: course.number('ar', 0),
+          },
+          $inc: {
+            count: 1,
+          },
+        }
+      );
+    }
   }
-  
+
   // Save Items
   const items = $(data).elements('item.info');
 
@@ -608,20 +623,20 @@ export const save: EPR = async (info, data, send) => {
     const ultimatePlay = are.str('ultimate_play') == 'true' ? 1 : 0;
     await DB.Upsert<Arena>(
       refid,
-      { 
+      {
         collection: 'arena',
-        season: szn
+        season: szn,
       },
-      { 
-        $inc: { 
+      {
+        $inc: {
           ultimateRate: _.isNil(earnedUR) ? 0 : earnedUR,
           megamixRate: _.isNil(earnedMR) ? 0 : earnedMR,
           shopPoint: _.isNil(earnedSP) ? 0 : earnedSP,
           rankPoint: _.isNil(earnedRP) ? 0 : earnedRP,
           liveEnergy: _.isNil(earnedLE) ? 0 : earnedLE,
           rankCount: rankPlay,
-          ultimateCount: ultimatePlay
-        } 
+          ultimateCount: ultimatePlay,
+        },
       }
     );
   }
@@ -630,13 +645,13 @@ export const save: EPR = async (info, data, send) => {
 };
 
 export const load: EPR = async (info, data, send) => {
-  console.log("Loading savedata");
+  console.log('Loading savedata');
   const refid = $(data).str('refid', $(data).attr().dataid);
   if (!refid) return send.deny();
 
   const version = Math.abs(getVersion(info));
-  console.log("Got version: " + version);
-  console.log("DataID: " + refid);
+  console.log('Got version: ' + version);
+  console.log('DataID: ' + refid);
   if (version == 0) return send.deny();
 
   let profile = await DB.FindOne<Profile>(refid, {
@@ -644,7 +659,7 @@ export const load: EPR = async (info, data, send) => {
   });
 
   if (!profile) {
-    if (version === 1) return send.object(K.ATTR({ none: "1" }));
+    if (version === 1) return send.object(K.ATTR({ none: '1' }));
     return send.object({ result: K.ITEM('u8', 1) });
   }
 
@@ -653,52 +668,121 @@ export const load: EPR = async (info, data, send) => {
     version,
   })) || { base: 0, name: 0, level: 0 };
 
-  let presents = []
-  if(version === 6) {
-    if(IO.Exists('webui/asset/config/events.json')) {
-      let bufEventData = await IO.ReadFile('webui/asset/json/events.json')
-      let bufEventConfig = await IO.ReadFile('webui/asset/config/events.json')
-      let eventData = JSON.parse(bufEventData.toString())
-      let eventConfig = JSON.parse(bufEventConfig.toString())
-      for(const eventIter in eventData['events']) {
-        let typeIds = {'gift_crew': [11, 1], 'gift': [0, 23], 'cross_online': [0, 23]}
-        if(['gift_crew', 'gift', 'cross_online'].includes(eventData['events'][eventIter]['type']) && eventConfig[eventData['events'][eventIter]['id']] !== undefined) {
-          if(typeof eventConfig[eventData['events'][eventIter]['id']]['toggle'] === "boolean") {
-            if(eventConfig[eventData['events'][eventIter]['id']]['toggle']) {
-              for(const itemIter in EVENT_ITEMS6[eventData['events'][eventIter]['id']]) {
-                let itemId = parseInt(EVENT_ITEMS6[eventData['events'][eventIter]['id']][itemIter])
-                if(await DB.Count(refid, {collection:'item', type: typeIds[eventData['events'][eventIter]['type']][0], id: itemId}) === 0) {
+  let presents = [];
+  if (version === 6) {
+    if (IO.Exists('webui/asset/config/events.json')) {
+      let bufEventData = await IO.ReadFile('webui/asset/json/events.json');
+      let bufEventConfig = await IO.ReadFile('webui/asset/config/events.json');
+      let eventData = JSON.parse(bufEventData.toString());
+      let eventConfig = JSON.parse(bufEventConfig.toString());
+      for (const eventIter in eventData['events']) {
+        let typeIds = {
+          gift_crew: [11, 1],
+          gift: [0, 23],
+          cross_online: [0, 23],
+        };
+        if (
+          ['gift_crew', 'gift', 'cross_online'].includes(
+            eventData['events'][eventIter]['type']
+          ) &&
+          eventConfig[eventData['events'][eventIter]['id']] !== undefined
+        ) {
+          if (
+            typeof eventConfig[eventData['events'][eventIter]['id']][
+              'toggle'
+            ] === 'boolean'
+          ) {
+            if (eventConfig[eventData['events'][eventIter]['id']]['toggle']) {
+              for (const itemIter in EVENT_ITEMS6[
+                eventData['events'][eventIter]['id']
+              ]) {
+                let itemId = parseInt(
+                  EVENT_ITEMS6[eventData['events'][eventIter]['id']][itemIter]
+                );
+                if (
+                  (await DB.Count(refid, {
+                    collection: 'item',
+                    type: typeIds[eventData['events'][eventIter]['type']][0],
+                    id: itemId,
+                  })) === 0
+                ) {
                   await DB.Upsert(
-                    refid, 
-                    {collection: 'item', type: typeIds[eventData['events'][eventIter]['type']][0], id: itemId}, 
-                    {$set: { param: typeIds[eventData['events'][eventIter]['type']][1] }}
-                  )
+                    refid,
+                    {
+                      collection: 'item',
+                      type: typeIds[eventData['events'][eventIter]['type']][0],
+                      id: itemId,
+                    },
+                    {
+                      $set: {
+                        param:
+                          typeIds[eventData['events'][eventIter]['type']][1],
+                      },
+                    }
+                  );
 
                   presents.push({
                     id: itemId,
                     type: typeIds[eventData['events'][eventIter]['type']][0],
-                    param: typeIds[eventData['events'][eventIter]['type']][1]
-                  })
+                    param: typeIds[eventData['events'][eventIter]['type']][1],
+                  });
                 }
               }
             }
-          } else{
-            for(const toggleKeys in Object.keys(eventConfig[eventData['events'][eventIter]['id']]['toggle'])) {
-              if(eventConfig[eventData['events'][eventIter]['id']]['toggle'][Object.keys(eventConfig[eventData['events'][eventIter]['id']]['toggle'])[toggleKeys]]) {
-                for(const itemIter in EVENT_ITEMS6[Object.keys(eventConfig[eventData['events'][eventIter]['id']]['toggle'])[toggleKeys]]) {
-                  let itemId = parseInt(EVENT_ITEMS6[Object.keys(eventConfig[eventData['events'][eventIter]['id']]['toggle'])[toggleKeys]][itemIter])
-                  if(await DB.Count(refid, {collection:'item', type: typeIds[eventData['events'][eventIter]['type']][0], id: itemId}) === 0) {
+          } else {
+            for (const toggleKeys in Object.keys(
+              eventConfig[eventData['events'][eventIter]['id']]['toggle']
+            )) {
+              if (
+                eventConfig[eventData['events'][eventIter]['id']]['toggle'][
+                  Object.keys(
+                    eventConfig[eventData['events'][eventIter]['id']]['toggle']
+                  )[toggleKeys]
+                ]
+              ) {
+                for (const itemIter in EVENT_ITEMS6[
+                  Object.keys(
+                    eventConfig[eventData['events'][eventIter]['id']]['toggle']
+                  )[toggleKeys]
+                ]) {
+                  let itemId = parseInt(
+                    EVENT_ITEMS6[
+                      Object.keys(
+                        eventConfig[eventData['events'][eventIter]['id']][
+                          'toggle'
+                        ]
+                      )[toggleKeys]
+                    ][itemIter]
+                  );
+                  if (
+                    (await DB.Count(refid, {
+                      collection: 'item',
+                      type: typeIds[eventData['events'][eventIter]['type']][0],
+                      id: itemId,
+                    })) === 0
+                  ) {
                     await DB.Upsert(
-                      refid, 
-                      {collection: 'item', type: typeIds[eventData['events'][eventIter]['type']][0], id: itemId}, 
-                      {$set: { param: typeIds[eventData['events'][eventIter]['type']][1] }}
-                    )
+                      refid,
+                      {
+                        collection: 'item',
+                        type: typeIds[
+                          eventData['events'][eventIter]['type']
+                        ][0],
+                        id: itemId,
+                      },
+                      {
+                        $set: {
+                          param:
+                            typeIds[eventData['events'][eventIter]['type']][1],
+                        },
+                      }
+                    );
 
                     presents.push({
                       id: itemId,
                       type: typeIds[eventData['events'][eventIter]['type']][0],
-                      param: typeIds[eventData['events'][eventIter]['type']][1]
-                    })
+                      param: typeIds[eventData['events'][eventIter]['type']][1],
+                    });
                   }
                 }
               }
@@ -710,10 +794,21 @@ export const load: EPR = async (info, data, send) => {
   }
 
   const items = await DB.Find<Item>(refid, { collection: 'item' });
-  const courses = await DB.Find<CourseRecord>(refid, { collection: 'course', version });
+  const courses = await DB.Find<CourseRecord>(refid, {
+    collection: 'course',
+    version,
+  });
   const params = await DB.Find<Param>(refid, { collection: 'param' });
-  const arena = await DB.FindOne<Arena>(refid, { collection: 'arena', season: (U.GetConfig('arena_szn') !== "None") ? ARENA[U.GetConfig('arena_szn')]['details']['season'] : 0 });
-  const valgeneTicket = await DB.FindOne<ValgeneTicket>(refid, { collection: 'valgene_ticket' })
+  const arena = await DB.FindOne<Arena>(refid, {
+    collection: 'arena',
+    season:
+      U.GetConfig('arena_szn') !== 'None'
+        ? ARENA[U.GetConfig('arena_szn')]['details']['season']
+        : 0,
+  });
+  const valgeneTicket = await DB.FindOne<ValgeneTicket>(refid, {
+    collection: 'valgene_ticket',
+  });
 
   let time = new Date();
   let tempHour = time.getHours();
@@ -729,18 +824,23 @@ export const load: EPR = async (info, data, send) => {
   }
 
   if (version === 1) {
-    return send.pugFile('templates/booth/load.pug', { code: IDToCode(profile.id), ...profile });
+    return send.pugFile('templates/booth/load.pug', {
+      code: IDToCode(profile.id),
+      ...profile,
+    });
   }
 
   if (version === 2) {
-    let tempItem = U.GetConfig('unlock_all_appeal_cards') ? unlockAppealCards(items) : items
-    tempItem = Array.from(tempItem.values()).filter(r => (r.id <= 220));
+    let tempItem = U.GetConfig('unlock_all_appeal_cards')
+      ? unlockAppealCards(items)
+      : items;
+    tempItem = Array.from(tempItem.values()).filter(r => r.id <= 220);
     return send.pugFile('templates/infiniteinfection/load.pug', {
       courses,
       tempItem,
       params,
       skill,
-      ...profile
+      ...profile,
     });
   }
   const bgm = profile.bgm ? profile.bgm : 0;
@@ -756,18 +856,31 @@ export const load: EPR = async (info, data, send) => {
   const stampRD = profile.stampRD ? profile.stampRD : 0;
   const sysBG = profile.sysBG ? profile.sysBG : 0;
   const creatorItem = profile.creatorItem ? profile.creatorItem : 0;
-  const bplPro = (profile.bplSupport > 10) ? true : false
+  const bplPro = profile.bplSupport > 10 ? true : false;
   profile.bplSupport = profile.bplSupport ? profile.bplSupport % 10 : 0;
 
   const customize = [];
-  customize.push(bgm, subbg, nemsys, stampA, stampB, stampC, stampD, stampRA, stampRB, stampRC, stampRD, sysBG);
+  customize.push(
+    bgm,
+    subbg,
+    nemsys,
+    stampA,
+    stampB,
+    stampC,
+    stampD,
+    stampRA,
+    stampRB,
+    stampRC,
+    stampRD,
+    sysBG
+  );
 
-  var tempCustom = params.findIndex((e) => (e.type == 2 && e.id == 2))
+  var tempCustom = params.findIndex(e => e.type == 2 && e.id == 2);
 
   if (tempCustom == -1) {
     const tempParam: Param = { collection: 'param', type: 2, id: 2, param: [] };
     params.push(tempParam);
-    tempCustom = params.findIndex((e) => (e.type == 2 && e.id == 2))
+    tempCustom = params.findIndex(e => e.type == 2 && e.id == 2);
   }
 
   if (params[tempCustom]) {
@@ -776,9 +889,13 @@ export const load: EPR = async (info, data, send) => {
 
   let blasterpass = U.GetConfig('use_blasterpass') ? 1 : 0;
 
-  var tempItem = U.GetConfig('unlock_all_navigators') ? unlockNavigators(items) : items;
-  tempItem = U.GetConfig('unlock_all_appeal_cards') ? unlockAppealCards(items) : items;
-  tempItem = removeStampItems(tempItem)
+  var tempItem = U.GetConfig('unlock_all_navigators')
+    ? unlockNavigators(items)
+    : items;
+  tempItem = U.GetConfig('unlock_all_appeal_cards')
+    ? unlockAppealCards(items)
+    : items;
+  tempItem = removeStampItems(tempItem);
 
   // Make generator power always 100%,
   for (let i = 0; i < 50; i++) {
@@ -807,11 +924,14 @@ export const load: EPR = async (info, data, send) => {
 };
 
 export const create: EPR = async (info, data, send) => {
-  console.log("Creating profile");
+  console.log('Creating profile');
   const refid = $(data).str('refid', $(data).attr().refid);
   if (!refid) return send.deny();
-  console.log("DataID" + refid);
-  const name = $(data).str('name', $(data).attr().name ? $(data).attr().name : 'GUEST');
+  console.log('DataID' + refid);
+  const name = $(data).str(
+    'name',
+    $(data).attr().name ? $(data).attr().name : 'GUEST'
+  );
   let id = _.random(0, 99999999);
   while (await DB.FindOne<Profile>(null, { collecttion: 'profile', id })) {
     id = _.random(0, 99999999);
@@ -873,7 +993,7 @@ export const create: EPR = async (info, data, send) => {
     maxWeekChain: 0,
 
     bplSupport: 0,
-    creatorItem: 0
+    creatorItem: 0,
   };
 
   await DB.Upsert(refid, { collection: 'profile' }, profile);
@@ -881,7 +1001,7 @@ export const create: EPR = async (info, data, send) => {
 };
 
 export const buy: EPR = async (info, data, send) => {
-  console.log("buying")
+  console.log('buying');
   const refid = $(data).str('refid');
   if (!refid) return send.deny();
 
@@ -932,7 +1052,7 @@ export const print: EPR = async (info, data, send) => {
   var generatorArray = [];
   for (const g of genesisCards) {
     let tempGeneratorID = g.number('generator_id');
-    let exist = generatorArray.findIndex((e) => (e == tempGeneratorID));
+    let exist = generatorArray.findIndex(e => e == tempGeneratorID);
     if (exist == -1) {
       generatorArray.push(tempGeneratorID);
     }
@@ -941,39 +1061,40 @@ export const print: EPR = async (info, data, send) => {
     result: K.ITEM('s8', 0),
     genesis_cards: genesisCards.map(r => ({
       index: K.ITEM('s32', r.number('index')),
-      print_id: K.ITEM('s32', r.number('print_id'))
+      print_id: K.ITEM('s32', r.number('print_id')),
     })),
     after_power: generatorArray.map(r => ({
       generator_id: K.ITEM('s32', r),
       param: K.ITEM('s32', 10),
-    }))
-  }), { status: "0" };
-}
+    })),
+  }),
+    { status: '0' };
+};
 
 export const saveValgene: EPR = async (info, data, send) => {
-  console.log("Saving Valkyrie Generator Item")
+  console.log('Saving Valkyrie Generator Item');
   const refid = $(data).str('refid');
   const items = $(data).elements('item.info');
   const useTicket = $(data).bool('use_ticket');
-  let itemsToAdd = []
+  let itemsToAdd = [];
   for (const i of items) {
     const type = i.number('type');
     const id = i.number('id');
     const param = i.number('param');
-    if(type === 17) {
-      for (let stampId = ((id * 4) - 3); stampId <= (id * 4); stampId++) {
-        itemsToAdd.push({'type': type, 'id': stampId, 'param': param})
+    if (type === 17) {
+      for (let stampId = id * 4 - 3; stampId <= id * 4; stampId++) {
+        itemsToAdd.push({ type: type, id: stampId, param: param });
       }
     } else {
-      itemsToAdd.push({'type': type, 'id': id, 'param': param})
+      itemsToAdd.push({ type: type, id: id, param: param });
     }
   }
 
-  for(let itemToAdd in itemsToAdd) {
-    let id = itemsToAdd[itemToAdd].id
-    let type = itemsToAdd[itemToAdd].type
-    let param = itemsToAdd[itemToAdd].param
-    console.log("Saving (" + type + " | " + id + " | " + param + ")")
+  for (let itemToAdd in itemsToAdd) {
+    let id = itemsToAdd[itemToAdd].id;
+    let type = itemsToAdd[itemToAdd].type;
+    let param = itemsToAdd[itemToAdd].param;
+    console.log('Saving (' + type + ' | ' + id + ' | ' + param + ')');
     if (_.isNil(type) || _.isNil(id) || _.isNil(param)) continue;
 
     await DB.Upsert<Item>(
@@ -983,27 +1104,29 @@ export const saveValgene: EPR = async (info, data, send) => {
     );
   }
 
-  if(useTicket) {
+  if (useTicket) {
     await DB.Upsert<ValgeneTicket>(
       refid,
       { collection: 'valgene_ticket' },
-      { $inc: {ticketNum: -1} }
-    )
+      { $inc: { ticketNum: -1 } }
+    );
   }
-  let valgeneTicket = await DB.FindOne<ValgeneTicket>(refid, { collection: 'valgene_ticket' })
+  let valgeneTicket = await DB.FindOne<ValgeneTicket>(refid, {
+    collection: 'valgene_ticket',
+  });
   let result = {
-    result: K.ITEM('s32', 1)
-  }
-  if(valgeneTicket !== null) {
-    result['ticket_num'] = K.ITEM('s32', valgeneTicket.ticketNum)
-    result['limit_date'] = K.ITEM('u64', BigInt(valgeneTicket.limitDate))
+    result: K.ITEM('s32', 1),
+  };
+  if (valgeneTicket !== null) {
+    result['ticket_num'] = K.ITEM('s32', valgeneTicket.ticketNum);
+    result['limit_date'] = K.ITEM('u64', BigInt(valgeneTicket.limitDate));
   }
 
   return send.object(result);
-}
+};
 
 export const saveE: EPR = async (info, data, send) => {
-  console.log("save_e - WIP")
+  console.log('save_e - WIP');
 
   send.success();
-}
+};

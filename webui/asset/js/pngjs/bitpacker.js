@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-let constants = require("./constants");
+let constants = require('./constants');
 
 module.exports = function (dataIn, width, height, options) {
   let outHasAlpha =
@@ -79,9 +79,9 @@ module.exports = function (dataIn, width, height, options) {
         break;
       default:
         throw new Error(
-          "input color type:" +
+          'input color type:' +
             options.inputColorType +
-            " is not supported at present"
+            ' is not supported at present'
         );
     }
 
@@ -146,7 +146,7 @@ module.exports = function (dataIn, width, height, options) {
           break;
         }
         default:
-          throw new Error("unrecognised color Type " + options.colorType);
+          throw new Error('unrecognised color Type ' + options.colorType);
       }
 
       inIndex += inBpp;

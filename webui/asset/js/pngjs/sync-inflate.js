@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-let assert = require("assert").ok;
-let zlib = require("zlib");
-let util = require("util");
+let assert = require('assert').ok;
+let zlib = require('zlib');
+let util = require('util');
 
-let kMaxLength = require("buffer").kMaxLength;
+let kMaxLength = require('buffer').kMaxLength;
 
 function Inflate(opts) {
   if (!(this instanceof Inflate)) {
@@ -45,7 +45,7 @@ function _close(engine, callback) {
 }
 
 Inflate.prototype._processChunk = function (chunk, flushFlag, asyncCb) {
-  if (typeof asyncCb === "function") {
+  if (typeof asyncCb === 'function') {
     return zlib.Inflate._processChunk.call(this, chunk, flushFlag, asyncCb);
   }
 
@@ -60,7 +60,7 @@ Inflate.prototype._processChunk = function (chunk, flushFlag, asyncCb) {
   let nread = 0;
 
   let error;
-  this.on("error", function (err) {
+  this.on('error', function (err) {
     error = err;
   });
 
@@ -70,7 +70,7 @@ Inflate.prototype._processChunk = function (chunk, flushFlag, asyncCb) {
     }
 
     let have = availOutBefore - availOutAfter;
-    assert(have >= 0, "have should not go down");
+    assert(have >= 0, 'have should not go down');
 
     if (have > 0) {
       let out = self._buffer.slice(self._offset, self._offset + have);
@@ -105,7 +105,7 @@ Inflate.prototype._processChunk = function (chunk, flushFlag, asyncCb) {
     return false;
   }
 
-  assert(this._handle, "zlib binding closed");
+  assert(this._handle, 'zlib binding closed');
   let res;
   do {
     res = this._handle.writeSync(
@@ -128,9 +128,9 @@ Inflate.prototype._processChunk = function (chunk, flushFlag, asyncCb) {
   if (nread >= kMaxLength) {
     _close(this);
     throw new RangeError(
-      "Cannot create final Buffer. It would be larger than 0x" +
+      'Cannot create final Buffer. It would be larger than 0x' +
         kMaxLength.toString(16) +
-        " bytes"
+        ' bytes'
     );
   }
 
@@ -143,11 +143,11 @@ Inflate.prototype._processChunk = function (chunk, flushFlag, asyncCb) {
 util.inherits(Inflate, zlib.Inflate);
 
 function zlibBufferSync(engine, buffer) {
-  if (typeof buffer === "string") {
+  if (typeof buffer === 'string') {
     buffer = Buffer.from(buffer);
   }
   if (!(buffer instanceof Buffer)) {
-    throw new TypeError("Not a string or buffer");
+    throw new TypeError('Not a string or buffer');
   }
 
   let flushFlag = engine._finishFlushFlag;

@@ -1,22 +1,21 @@
 @font-face {
   font-family: testfont;
-  src: url("font/0001.ttf");
+  src: url('font/0001.ttf');
 }
 
 @font-face {
   font-family: ffff;
-  src: url("font/0002.ttf");
+  src: url('font/0002.ttf');
 }
 
 table.is-borderless td {
-  border: 0px solid #00000000
+  border: 0px solid #00000000;
 }
 
 table.is-center td {
   text-align: center;
   justify-content: center;
 }
-
 
 /* .course-content {
     padding: 0 30%;
@@ -27,7 +26,7 @@ table.is-center td {
     display: inline-block;
     max-width: 60%;
     width: 60%;
-    margin: 1em 2%
+    margin: 1em 2%;
   }
 }
 
@@ -79,7 +78,6 @@ table.is-center td {
   background-color: rgba(0, 0, 0, 0.3);
   padding: 1rem;
   gap: 2rem;
-
 }
 
 .vf-score-jacket {
@@ -108,7 +106,7 @@ table.is-center td {
 
 .vf-score {
   font-size: 2rem;
-  font-weight: lighter
+  font-weight: lighter;
 }
 
 .vf-bold {

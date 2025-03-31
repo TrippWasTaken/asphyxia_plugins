@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-let interlaceUtils = require("./interlace");
+let interlaceUtils = require('./interlace');
 
 let pixelBppMapper = [
   // 0 - dummy entry
@@ -10,7 +10,7 @@ let pixelBppMapper = [
   // 0: 0, 1: 0, 2: 0, 3: 0xff
   function (pxData, data, pxPos, rawPos) {
     if (rawPos === data.length) {
-      throw new Error("Ran out of data");
+      throw new Error('Ran out of data');
     }
 
     let pixel = data[rawPos];
@@ -24,7 +24,7 @@ let pixelBppMapper = [
   // 0: 0, 1: 0, 2: 0, 3: 1
   function (pxData, data, pxPos, rawPos) {
     if (rawPos + 1 >= data.length) {
-      throw new Error("Ran out of data");
+      throw new Error('Ran out of data');
     }
 
     let pixel = data[rawPos];
@@ -38,7 +38,7 @@ let pixelBppMapper = [
   // 0: 0, 1: 1, 2: 2, 3: 0xff
   function (pxData, data, pxPos, rawPos) {
     if (rawPos + 2 >= data.length) {
-      throw new Error("Ran out of data");
+      throw new Error('Ran out of data');
     }
 
     pxData[pxPos] = data[rawPos];
@@ -51,7 +51,7 @@ let pixelBppMapper = [
   // 0: 0, 1: 1, 2: 2, 3: 3
   function (pxData, data, pxPos, rawPos) {
     if (rawPos + 3 >= data.length) {
-      throw new Error("Ran out of data");
+      throw new Error('Ran out of data');
     }
 
     pxData[pxPos] = data[rawPos];
@@ -110,14 +110,14 @@ function bitRetriever(data, depth) {
 
   function split() {
     if (i === data.length) {
-      throw new Error("Ran out of data");
+      throw new Error('Ran out of data');
     }
     let byte = data[i];
     i++;
     let byte8, byte7, byte6, byte5, byte4, byte3, byte2, byte1;
     switch (depth) {
       default:
-        throw new Error("unrecognised depth");
+        throw new Error('unrecognised depth');
       case 16:
         byte2 = data[i];
         i++;
@@ -163,7 +163,7 @@ function bitRetriever(data, depth) {
     },
     end: function () {
       if (i !== data.length) {
-        throw new Error("extra data found");
+        throw new Error('extra data found');
       }
     },
   };
@@ -257,7 +257,7 @@ exports.dataToBitMap = function (data, bitmapInfo) {
   }
   if (depth === 8) {
     if (rawPos !== data.length) {
-      throw new Error("extra data found");
+      throw new Error('extra data found');
     }
   } else {
     bits.end();

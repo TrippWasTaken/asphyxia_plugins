@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-let constants = require("./constants");
-let CrcStream = require("./crc");
-let bitPacker = require("./bitpacker");
-let filter = require("./filter-pack");
-let zlib = require("zlib");
+let constants = require('./constants');
+let CrcStream = require('./crc');
+let bitPacker = require('./bitpacker');
+let filter = require('./filter-pack');
+let zlib = require('zlib');
 
 let Packer = (module.exports = function (options) {
   this._options = options;
@@ -20,11 +20,11 @@ let Packer = (module.exports = function (options) {
   options.bitDepth = options.bitDepth || 8;
   // This is outputColorType
   options.colorType =
-    typeof options.colorType === "number"
+    typeof options.colorType === 'number'
       ? options.colorType
       : constants.COLORTYPE_COLOR_ALPHA;
   options.inputColorType =
-    typeof options.inputColorType === "number"
+    typeof options.inputColorType === 'number'
       ? options.inputColorType
       : constants.COLORTYPE_COLOR_ALPHA;
 
@@ -37,7 +37,7 @@ let Packer = (module.exports = function (options) {
     ].indexOf(options.colorType) === -1
   ) {
     throw new Error(
-      "option color type:" + options.colorType + " is not supported at present"
+      'option color type:' + options.colorType + ' is not supported at present'
     );
   }
   if (
@@ -49,14 +49,14 @@ let Packer = (module.exports = function (options) {
     ].indexOf(options.inputColorType) === -1
   ) {
     throw new Error(
-      "option input color type:" +
+      'option input color type:' +
         options.inputColorType +
-        " is not supported at present"
+        ' is not supported at present'
     );
   }
   if (options.bitDepth !== 8 && options.bitDepth !== 16) {
     throw new Error(
-      "option bit depth:" + options.bitDepth + " is not supported at present"
+      'option bit depth:' + options.bitDepth + ' is not supported at present'
     );
   }
 });

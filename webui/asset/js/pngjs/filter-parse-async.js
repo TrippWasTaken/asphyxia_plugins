@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-let util = require("util");
-let ChunkStream = require("./chunkstream");
-let Filter = require("./filter-parse");
+let util = require('util');
+let ChunkStream = require('./chunkstream');
+let Filter = require('./filter-parse');
 
 let FilterAsync = (module.exports = function (bitmapInfo) {
   ChunkStream.call(this);
@@ -15,7 +15,7 @@ let FilterAsync = (module.exports = function (bitmapInfo) {
       buffers.push(buffer);
     },
     complete: function () {
-      that.emit("complete", Buffer.concat(buffers));
+      that.emit('complete', Buffer.concat(buffers));
     },
   });
 

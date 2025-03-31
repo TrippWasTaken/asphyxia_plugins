@@ -1,4 +1,4 @@
-import {Counter} from './models/counter';
+import { Counter } from './models/counter';
 
 export function IDToCode(id: number) {
   const padded = _.padStart(id.toString(), 8);
@@ -15,7 +15,7 @@ export async function GetCounter(key: string) {
 }
 
 export function getVersion(info: EamuseInfo) {
-  const dateCode = parseInt(info.model.split(":")[4]);
+  const dateCode = parseInt(info.model.split(':')[4]);
   if (dateCode <= 2013052900) return 1;
   if (dateCode <= 2014112000) return 2;
   if (dateCode <= 2016121200) return 3;

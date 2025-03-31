@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 function dePalette(indata, outdata, width, height, palette) {
   let pxPos = 0;
@@ -8,7 +8,7 @@ function dePalette(indata, outdata, width, height, palette) {
       let color = palette[indata[pxPos]];
 
       if (!color) {
-        throw new Error("index " + indata[pxPos] + " not in palette");
+        throw new Error('index ' + indata[pxPos] + ' not in palette');
       }
 
       for (let i = 0; i < 4; i++) {

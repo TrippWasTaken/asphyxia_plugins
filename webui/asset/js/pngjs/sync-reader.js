@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 let SyncReader = (module.exports = function (buffer) {
   this._buffer = buffer;
@@ -36,10 +36,10 @@ SyncReader.prototype.process = function () {
   }
 
   if (this._reads.length > 0) {
-    throw new Error("There are some read requests waiting on finished stream");
+    throw new Error('There are some read requests waiting on finished stream');
   }
 
   if (this._buffer.length > 0) {
-    throw new Error("Unrecognised content at end of stream");
+    throw new Error('Unrecognised content at end of stream');
   }
 };

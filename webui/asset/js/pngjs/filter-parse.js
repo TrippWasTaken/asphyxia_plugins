@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-let interlaceUtils = require("./interlace");
-let paethPredictor = require("./paeth-predictor");
+let interlaceUtils = require('./interlace');
+let paethPredictor = require('./paeth-predictor');
 
 function getByteWidth(width, bpp, depth) {
   let byteWidth = width * bpp;
@@ -152,7 +152,7 @@ Filter.prototype._reverseFilterLine = function (rawData) {
         this._unFilterType4(rawData, unfilteredLine, byteWidth);
         break;
       default:
-        throw new Error("Unrecognised filter type - " + filter);
+        throw new Error('Unrecognised filter type - ' + filter);
     }
   }
 

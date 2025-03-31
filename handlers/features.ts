@@ -17,29 +17,42 @@ export const hiscore: EPR = async (info, data, send) => {
 
   if (version === 1) {
     return send.object({
-      hiscore: K.ATTR({ type: "1" }, {
-        music: _.map(
-          _.groupBy(records, r => {
-            return `${r.mid}:${r.type}`;
-          }),
-          r => _.maxBy(r, 'score')
-        ).map(r => (K.ATTR({ id: String(r.mid) }, {
-          note: (() => {
-            const notes = [];
+      hiscore: K.ATTR(
+        { type: '1' },
+        {
+          music: _.map(
+            _.groupBy(records, r => {
+              return `${r.mid}:${r.type}`;
+            }),
+            r => _.maxBy(r, 'score')
+          ).map(r =>
+            K.ATTR(
+              { id: String(r.mid) },
+              {
+                note: (() => {
+                  const notes = [];
 
-            for (let i = 1; i <= 3; i++) {
-              if (r.type !== i) continue;
-              notes.push(K.ATTR({ type: String(r.type) }, {
-                name: K.ITEM('str', profiles[r.__refid][0].name),
-                score: K.ITEM('u32', r.score)
-              }))
-            }
+                  for (let i = 1; i <= 3; i++) {
+                    if (r.type !== i) continue;
+                    notes.push(
+                      K.ATTR(
+                        { type: String(r.type) },
+                        {
+                          name: K.ITEM('str', profiles[r.__refid][0].name),
+                          score: K.ITEM('u32', r.score),
+                        }
+                      )
+                    );
+                  }
 
-            return notes;
-          })()
-        }))),
-      })
-    })
+                  return notes;
+                })(),
+              }
+            )
+          ),
+        }
+      ),
+    });
   }
 
   return send.object({
@@ -65,7 +78,7 @@ export const hiscore: EPR = async (info, data, send) => {
 
 export const rival: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
-  const version = parseInt(info.model.split(":")[4]);
+  const version = parseInt(info.model.split(':')[4]);
   if (!refid) return send.deny();
 
   const rivals = (
@@ -83,7 +96,12 @@ export const rival: EPR = async (info, data, send) => {
             await DB.Find<MusicRecord>(p.refid, { collection: 'music' })
           ).map(r => ({
             // Changes were somehow made in the order of the field for the version 2023042500
-            param: K.ARRAY('u32', version < 2023042500 ? [r.mid, r.type, r.score, r.clear, r.grade] : [r.mid, r.type, r.score, r.exscore, r.clear, r.grade]),
+            param: K.ARRAY(
+              'u32',
+              version < 2023042500
+                ? [r.mid, r.type, r.score, r.clear, r.grade]
+                : [r.mid, r.type, r.score, r.exscore, r.clear, r.grade]
+            ),
           })),
         };
       })
@@ -158,11 +176,11 @@ export const loadMix: EPR = async (info, data, send) => {
 };
 
 export const entryE: EPR = async (info, data, send) => {
-  console.log("entry_e id: " + $(data).number('eid'))
-  send.success()
-}
+  console.log('entry_e id: ' + $(data).number('eid'));
+  send.success();
+};
 
-export const globalMatch: EPR = async (info, data, send) => {  
+export const globalMatch: EPR = async (info, data, send) => {
   let entryData: Matchmaker = {
     collection: 'matchmaker',
     timestamp: Date.now(),
@@ -176,13 +194,13 @@ export const globalMatch: EPR = async (info, data, send) => {
     gip: $(data).numbers('gip'),
     lip: $(data).numbers('lip'),
     claim: $(data).number('claim'),
-    entry_id: $(data).number('entry_id')
-  }
+    entry_id: $(data).number('entry_id'),
+  };
 
-  let loggip = entryData.gip.join(".")
-  let loglip = entryData.lip.join(".")
+  let loggip = entryData.gip.join('.');
+  let loglip = entryData.lip.join('.');
 
-  console.log("====================================")
+  console.log('====================================');
   // console.log("   c_ver: " + entryData.c_ver)
   // console.log("   p_num: " + entryData.p_num) // current match player count
   // console.log("  p_rest: " + entryData.p_rest) // remaining player spaces
@@ -194,67 +212,103 @@ export const globalMatch: EPR = async (info, data, send) => {
   // console.log("     lip: " + entryData.lip)
   // console.log("   claim: " + entryData.claim)
   // console.log("entry_id: " + entryData.entry_id)
-  console.log("[" + loglip + " | " + loggip + "] Searching for online match opponents")
-  let expCnt = await DB.Remove({collection: 'matchmaker', timestamp: {$lt: Date.now() - 100000}})
-  console.log("[" + loglip + " | " + loggip + "] Removed " + expCnt + " expired match data.")
+  console.log(
+    '[' + loglip + ' | ' + loggip + '] Searching for online match opponents'
+  );
+  let expCnt = await DB.Remove({
+    collection: 'matchmaker',
+    timestamp: { $lt: Date.now() - 100000 },
+  });
+  console.log(
+    '[' +
+      loglip +
+      ' | ' +
+      loggip +
+      '] Removed ' +
+      expCnt +
+      ' expired match data.'
+  );
 
-  if(await DB.Count({collection: 'matchmaker', lip: entryData.lip}) === 0) {
-    console.log("[" + loglip + " | " + loggip + "] Adding your info.")
+  if (
+    (await DB.Count({ collection: 'matchmaker', lip: entryData.lip })) === 0
+  ) {
+    console.log('[' + loglip + ' | ' + loggip + '] Adding your info.');
     await DB.Upsert<Matchmaker>(
-      { collection: 'matchmaker', gip: entryData.gip, lip: entryData.lip},
+      { collection: 'matchmaker', gip: entryData.gip, lip: entryData.lip },
       entryData
-    )
+    );
   } else {
-    console.log("[" + loglip + " | " + loggip + "] Updating info.")
+    console.log('[' + loglip + ' | ' + loggip + '] Updating info.');
     await DB.Upsert<Matchmaker>(
-      { collection: 'matchmaker', gip: entryData.gip, lip: entryData.lip},
-      { $set: {
+      { collection: 'matchmaker', gip: entryData.gip, lip: entryData.lip },
+      {
+        $set: {
           c_ver: entryData.c_ver,
           p_num: entryData.p_num,
           p_rest: entryData.p_rest,
           filter: entryData.filter,
           mid: entryData.mid,
           sec: entryData.sec,
-          claim: entryData.claim
-        }
+          claim: entryData.claim,
+        },
       }
-    )
+    );
   }
-  
-  if(entryData.p_rest < 1) {
-    console.log("[" + loglip + " | " + loggip + "] Room is full. Halting.")
+
+  if (entryData.p_rest < 1) {
+    console.log('[' + loglip + ' | ' + loggip + '] Room is full. Halting.');
     return send.deny();
   }
 
-  console.log("[" + loglip + " | " + loggip + "] Searching...")
+  console.log('[' + loglip + ' | ' + loggip + '] Searching...');
 
-  let opData = await DB.Find<Matchmaker>({collection: 'matchmaker', filter: entryData.filter, mid: entryData.mid, claim: entryData.claim, entry_id: entryData.entry_id})
+  let opData = await DB.Find<Matchmaker>({
+    collection: 'matchmaker',
+    filter: entryData.filter,
+    mid: entryData.mid,
+    claim: entryData.claim,
+    entry_id: entryData.entry_id,
+  });
   let opponents = {
     entry_id: K.ITEM('u32', entryData.entry_id),
     entry: opData.map(e => ({
       port: K.ITEM('u16', e.port),
       gip: K.ITEM('4u8', e.gip),
-      lip: K.ITEM('4u8', e.lip)
-    }))
-  }
-  console.log("[" + loglip + " | " + loggip + "] Players found: " + (opponents.entry.length - 1) + "")
-  if(opponents.entry.length === 1) send.deny()
-  else send.object(opponents)
-}
+      lip: K.ITEM('4u8', e.lip),
+    })),
+  };
+  console.log(
+    '[' +
+      loglip +
+      ' | ' +
+      loggip +
+      '] Players found: ' +
+      (opponents.entry.length - 1) +
+      ''
+  );
+  if (opponents.entry.length === 1) send.deny();
+  else send.object(opponents);
+};
 
 export const lounge: EPR = async (info, data, send) => {
-  let filter = $(data).number('filter')
-  await DB.Remove({collection: 'matchmaker', timestamp: {$lt: Date.now() - 100000}})
-  let matches = await DB.Find<Matchmaker>({collection: 'matchmaker', filter: filter})
-  if(matches.length < 1) {
+  let filter = $(data).number('filter');
+  await DB.Remove({
+    collection: 'matchmaker',
+    timestamp: { $lt: Date.now() - 100000 },
+  });
+  let matches = await DB.Find<Matchmaker>({
+    collection: 'matchmaker',
+    filter: filter,
+  });
+  if (matches.length < 1) {
     send.object({
-      interval: K.ITEM('u32', 5)
-    })
+      interval: K.ITEM('u32', 5),
+    });
   } else {
-    let longestWait = Math.max(...matches.map(m => m.sec))
+    let longestWait = Math.max(...matches.map(m => m.sec));
     send.object({
       interval: K.ITEM('u32', 10),
-      wait: K.ITEM('u32', longestWait)
-    })
+      wait: K.ITEM('u32', longestWait),
+    });
   }
-}
+};

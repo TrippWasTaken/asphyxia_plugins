@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-let util = require("util");
-let Stream = require("stream");
-let Parser = require("./parser-async");
-let Packer = require("./packer-async");
-let PNGSync = require("./png-sync");
+let util = require('util');
+let Stream = require('stream');
+let Parser = require('./parser-async');
+let Packer = require('./packer-async');
+let PNGSync = require('./png-sync');
 
 let PNG = (exports.PNG = function (options) {
   Stream.call(this);
@@ -29,23 +29,23 @@ let PNG = (exports.PNG = function (options) {
 
   this._parser = new Parser(options);
 
-  this._parser.on("error", this.emit.bind(this, "error"));
-  this._parser.on("close", this._handleClose.bind(this));
-  this._parser.on("metadata", this._metadata.bind(this));
-  this._parser.on("gamma", this._gamma.bind(this));
+  this._parser.on('error', this.emit.bind(this, 'error'));
+  this._parser.on('close', this._handleClose.bind(this));
+  this._parser.on('metadata', this._metadata.bind(this));
+  this._parser.on('gamma', this._gamma.bind(this));
   this._parser.on(
-    "parsed",
+    'parsed',
     function (data) {
       this.data = data;
-      this.emit("parsed", data);
+      this.emit('parsed', data);
     }.bind(this)
   );
 
   this._packer = new Packer(options);
-  this._packer.on("data", this.emit.bind(this, "data"));
-  this._packer.on("end", this.emit.bind(this, "end"));
-  this._parser.on("close", this._handleClose.bind(this));
-  this._packer.on("error", this.emit.bind(this, "error"));
+  this._packer.on('data', this.emit.bind(this, 'data'));
+  this._packer.on('end', this.emit.bind(this, 'end'));
+  this._parser.on('close', this._handleClose.bind(this));
+  this._packer.on('error', this.emit.bind(this, 'error'));
 });
 util.inherits(PNG, Stream);
 
@@ -53,7 +53,7 @@ PNG.sync = PNGSync;
 
 PNG.prototype.pack = function () {
   if (!this.data || !this.data.length) {
-    this.emit("error", "No data provided");
+    this.emit('error', 'No data provided');
     return this;
   }
 
@@ -71,20 +71,20 @@ PNG.prototype.parse = function (data, callback) {
     let onParsed, onError;
 
     onParsed = function (parsedData) {
-      this.removeListener("error", onError);
+      this.removeListener('error', onError);
 
       this.data = parsedData;
       callback(null, this);
     }.bind(this);
 
     onError = function (err) {
-      this.removeListener("parsed", onParsed);
+      this.removeListener('parsed', onParsed);
 
       callback(err, null);
     }.bind(this);
 
-    this.once("parsed", onParsed);
-    this.once("error", onError);
+    this.once('parsed', onParsed);
+    this.once('error', onError);
   }
 
   this.end(data);
@@ -104,7 +104,7 @@ PNG.prototype._metadata = function (metadata) {
   this.width = metadata.width;
   this.height = metadata.height;
 
-  this.emit("metadata", metadata);
+  this.emit('metadata', metadata);
 };
 
 PNG.prototype._gamma = function (gamma) {
@@ -113,7 +113,7 @@ PNG.prototype._gamma = function (gamma) {
 
 PNG.prototype._handleClose = function () {
   if (!this._parser.writable && !this._packer.readable) {
-    this.emit("close");
+    this.emit('close');
   }
 };
 
@@ -135,7 +135,7 @@ PNG.bitblt = function (src, dst, srcX, srcY, width, height, deltaX, deltaY) {
     srcX + width > src.width ||
     srcY + height > src.height
   ) {
-    throw new Error("bitblt reading outside image");
+    throw new Error('bitblt reading outside image');
   }
 
   if (
@@ -144,7 +144,7 @@ PNG.bitblt = function (src, dst, srcX, srcY, width, height, deltaX, deltaY) {
     deltaX + width > dst.width ||
     deltaY + height > dst.height
   ) {
-    throw new Error("bitblt writing outside image");
+    throw new Error('bitblt writing outside image');
   }
 
   for (let y = 0; y < height; y++) {

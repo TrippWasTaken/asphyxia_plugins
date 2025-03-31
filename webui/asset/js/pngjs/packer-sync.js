@@ -1,17 +1,17 @@
-"use strict";
+'use strict';
 
 let hasSyncZlib = true;
-let zlib = require("zlib");
+let zlib = require('zlib');
 if (!zlib.deflateSync) {
   hasSyncZlib = false;
 }
-let constants = require("./constants");
-let Packer = require("./packer");
+let constants = require('./constants');
+let Packer = require('./packer');
 
 module.exports = function (metaData, opt) {
   if (!hasSyncZlib) {
     throw new Error(
-      "To use the sync capability of this library in old node versions, please pin pngjs to v2.3.0"
+      'To use the sync capability of this library in old node versions, please pin pngjs to v2.3.0'
     );
   }
 
@@ -45,7 +45,7 @@ module.exports = function (metaData, opt) {
   filteredData = null;
 
   if (!compressedData || !compressedData.length) {
-    throw new Error("bad png - invalid compressed data response");
+    throw new Error('bad png - invalid compressed data response');
   }
   chunks.push(packer.packIDAT(compressedData));
 
