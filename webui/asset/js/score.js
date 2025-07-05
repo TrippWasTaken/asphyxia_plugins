@@ -15,16 +15,6 @@ function getSongName(musicid) {
   return result[0]['info']['title_name'];
 }
 
-function getReleaseDate(musicid) {
-  var result = music_db['mdb']['music'].filter(
-    object => object['@id'] == musicid
-  );
-  if (result.length == 0 || !('distribution_date' in result[0]['info'])) {
-    return 'Unknown';
-  }
-  return result[0]['info']['distribution_date']['#text'];
-}
-
 function getDifficulty(musicid, type) {
   var result = music_db['mdb']['music'].filter(
     object => object['@id'] == musicid
@@ -89,20 +79,22 @@ function getGrade(grade) {
 }
 
 function getMedal(clear) {
-  switch (clear) {
-    case 0:
-      return 'No Data';
-    case 1:
-      return 'Played';
-    case 2:
-      return 'Clear';
-    case 3:
-      return 'Hard Clear';
-    case 4:
-      return 'UC';
-    case 5:
-      return 'PUC';
-  }
+    switch (clear) {
+        case 0:
+            return "No Data";
+        case 1:
+            return "PLAYED";
+        case 2:
+            return "EFFECTIVE CLEAR";
+        case 3:
+            return "EXCESSIVE CLEAR";
+        case 6:
+            return "MAXXIVE CLEAR";
+        case 4:
+            return "UC";
+        case 5:
+            return "PUC";
+    }
 }
 
 function difficultySort(d) {
@@ -286,25 +278,137 @@ $(document).ready(function () {
       // getSongName(1);
     }
 
-    $('#music_score').DataTable({
-      data: music_data,
-      columns: [
-        { data: 'mid' },
-        { data: 'songname' },
-        { data: 'diff', type: 'diff' },
-        { data: 'releasedate' },
-        { data: 'score' },
-        { data: 'exscore' },
-        { data: 'grade', type: 'grade' },
-        { data: 'clear', type: 'clear-mark' },
-      ],
-      columnDefs: [],
-      responsive: {
-        details: {
-          display: $.fn.dataTable.Responsive.display.modal({
-            header: function (row) {
-              var data = row.data();
-              return 'Details for ' + data.songname;
+$(document).ready(function() {
+    jQuery.fn.dataTableExt.oSort['diff-asc'] = function(a, b) {
+        var x = difficultySort(a);
+        var y = difficultySort(b);
+
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    };
+
+    jQuery.fn.dataTableExt.oSort['diff-desc'] = function(a, b) {
+        var x = difficultySort(a);
+        var y = difficultySort(b);
+
+        return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+    };
+
+    jQuery.fn.dataTableExt.oSort['grade-asc'] = function(a, b) {
+        var x = gradeSort(a);
+        var y = gradeSort(b);
+
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    };
+
+    jQuery.fn.dataTableExt.oSort['grade-desc'] = function(a, b) {
+        var x = gradeSort(a);
+        var y = gradeSort(b);
+
+        return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+    };
+
+    jQuery.fn.dataTableExt.oSort['clear-mark-asc'] = function(a, b) {
+        var x = markSort(a);
+        var y = markSort(b);
+
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    };
+
+    jQuery.fn.dataTableExt.oSort['clear-mark-desc'] = function(a, b) {
+        var x = markSort(a);
+        var y = markSort(b);
+
+        return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+    };
+    var profile_data = JSON.parse(document.getElementById("data-pass").innerText);
+    profile_data = profile_data.sort(function(a, b) {
+        if (a.mid > b.mid) return 1;
+        if (a.mid < b.mid) return -1;
+        return a.type > b.type ? 1 : -1;
+    });
+
+    //console.log(profile_data);
+    //$('#music_score').DataTable();
+
+    $.getJSON("static/asset/json/music_db.json", function(json) {
+        const translate_table = {
+            '龕': '€',
+            '釁': '🍄',
+            '驩': 'Ø',
+            '曦': 'à',
+            '齷': 'é',
+            '骭': 'ü',
+            '齶': '♡',
+            '彜': 'ū',
+            '罇': 'ê',
+            '雋': 'Ǜ',
+            '鬻': '♃',
+            '鬥': 'Ã',
+            '鬆': 'Ý',
+            '曩': 'è',
+            '驫': 'ā',
+            '齲': '♥',
+            '騫': 'á',
+            '趁': 'Ǣ',
+            '鬮': '¡',
+            '盥': '⚙︎',
+            '隍': '︎Ü',
+            '頽': 'ä',
+            '餮': 'Ƶ',
+            '黻': '*',
+            '蔕': 'ũ',
+            '闃': 'Ā'
+        }
+        music_db = json;
+        var music_data = [];
+
+
+        for (var i in profile_data) {
+            var temp_data = {};
+            temp_data.mid = profile_data[i].mid;
+            temp_data.songname = getSongName(profile_data[i].mid);
+            temp_data.songname = temp_data.songname.replace(/[龕釁驩曦齷骭齶彜罇雋鬻鬥鬆曩驫齲騫趁鬮盥隍頽餮黻蔕闃]/g, m => translate_table[m]);
+            temp_data.diff = getDifficulty(profile_data[i].mid, profile_data[i].type);
+            temp_data.score = profile_data[i].score;
+            temp_data.exscore = ((profile_data[i].exscore) ? profile_data[i].exscore : 0);
+            temp_data.grade = getGrade(profile_data[i].grade);
+            temp_data.clear = getMedal(profile_data[i].clear);
+            music_data.push(temp_data);
+
+            // $("#music_score>tbody").append($('<tr>')
+            // .append($('<td>').append(getSongName(profile_data[i].mid)))
+            // .append($('<td>').append(getDifficulty(profile_data[i].mid,profile_data[i].type)))
+            // .append($('<td>').append(profile_data[i].score))
+            // .append($('<td>').append((profile_data[i].exscore)? profile_data[i].exscore:0))
+            // .append($('<td>').append(getGrade(profile_data[i].grade)))
+            // .append($('<td>').append(getMedal(profile_data[i].clear)))
+            // );
+            // getSongName(1);
+        }
+
+        $('#music_score').DataTable({
+            data: music_data,
+            columns: [
+                { data: 'mid' },
+                { data: 'songname' },
+                { data: 'diff', "type": "diff" },
+                { data: 'score', },
+                { data: 'exscore' },
+                { data: 'grade', "type": "grade" },
+                { data: 'clear', "type": "clear-mark" }
+            ],
+            columnDefs: [
+
+            ],
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.modal({
+                        header: function(row) {
+                            var data = row.data();
+                            return 'Details for ' + data.songname;
+                        }
+                    })
+                }
             },
           }),
         },

@@ -26,6 +26,47 @@ function generateEventToggles(eventInfo, eventConfig, eventEnabled) {
           )
         )
     );
+    if (eventInfo['settings'] !== undefined) {
+      for (let set of eventInfo['settings']) {
+        cardContent.append(
+          $('<div class="field is-horizontal">')
+            .append(
+              $('<div class="field-label is-normal">').append(
+                $(
+                  '<label class="label" for="' +
+                    set['id'] +
+                    '">' +
+                    set['title'] +
+                    '</label>'
+                )
+              )
+            )
+            .append(
+              $('<div class="field-body">').append(
+                $('<div class="field">')
+                  .append(
+                    $('<div class="control">').append(
+                      $('<div class="select">').append(
+                        $('<select name="' + set['id'] + '">').append(
+                          set['val'].map(s =>
+                            $('<option>', {
+                              value: s[0],
+                              text: s[1],
+                              selected:
+                                s[0] ===
+                                parseInt(eventConfig['settings'][set['id']]),
+                            })
+                          )
+                        )
+                      )
+                    )
+                  )
+                  .append('<p class="help">' + set['desc'] + '</p>')
+              )
+            )
+        );
+      }
+    }
   } else {
     for (const infoIter in eventInfo['info']) {
       if (eventInfo['info'][infoIter].includes('/hd') !== true) {
@@ -89,6 +130,16 @@ async function insertNewEventConfig(eventData, eventIter, eventID) {
       ] = false;
     }
   }
+  if (eventData['events'][eventIter]['settings'] !== undefined) {
+    let settings = {};
+    for (const set of eventData['events'][eventIter]['settings']) {
+      settings[set['id']] = '';
+    }
+    return {
+      toggle: toggle,
+      settings: settings,
+    };
+  }
   return {
     toggle: toggle,
   };
@@ -124,8 +175,16 @@ $(document).ready(async function () {
     }
 
     if (eventData['events'][eventIter]['enabled']) {
-      if (
-        /stamp|completestamp|tama/.test(eventData['events'][eventIter]['type'])
+      if (/tama|variant/.test(eventData['events'][eventIter]['type'])) {
+        $('#specevent_select').append(
+          '<option value=' +
+            eventData['events'][eventIter]['id'] +
+            '>' +
+            eventData['events'][eventIter]['name'] +
+            '</option>'
+        );
+      } else if (
+        /stamp|completestamp/.test(eventData['events'][eventIter]['type'])
       ) {
         $('#stampevent_select').append(
           '<option value=' +
@@ -189,6 +248,22 @@ $(document).ready(async function () {
       }
     });
 
+    $.each($('select'), function (index, value) {
+      for (const eventIter in eventData['events']) {
+        if (eventData['events'][eventIter]['settings'] !== undefined) {
+          for (const set of eventData['events'][eventIter]['settings']) {
+            if (
+              set['id'] === $(value).parent().children('select').attr('name')
+            ) {
+              eventConfig[eventData['events'][eventIter]['id']]['settings'][
+                set['id']
+              ] = $(value).parent().children('select').val();
+            }
+          }
+        }
+      }
+    });
+
     await emit('manageEvents', { eventConfig: eventConfig }).then(
       function (response) {
         alert('Saved.');
@@ -202,6 +277,7 @@ $(document).ready(async function () {
   $('select').change(async function (event) {
     let selectClass = '#' + $(this).attr('id');
     let listClasses = {
+      '#specevent_select': 'spec',
       '#stampevent_select': 'stamp',
       '#giftevent_select': 'gift',
       '#crossevent_select': 'cross',

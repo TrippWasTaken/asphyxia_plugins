@@ -76,20 +76,22 @@ function getGrade(grade) {
 }
 
 function getMedal(clear) {
-  switch (clear) {
-    case 0:
-      return 0;
-    case 1:
-      return 0.5;
-    case 2:
-      return 1.0;
-    case 3:
-      return 1.02;
-    case 4:
-      return 1.05;
-    case 5:
-      return 1.1;
-  }
+    switch (clear) {
+        case 0:
+            return 0;
+        case 1:
+            return 0.5;
+        case 2:
+            return 1.0;
+        case 3:
+            return 1.02;
+        case 6:
+            return 1.04
+        case 4:
+            return 1.05;
+        case 5:
+            return 1.10;
+    }
 }
 
 function getAppealCard(appeal) {
@@ -239,16 +241,39 @@ function calculateVolforce() {
 var diffName = ['NOV', 'ADV', 'EXH', 'INF\nGRV\nHVN\nVVD\nXCD', 'MXM'];
 
 function preSetTableMark(type) {
-  $('#statistic-table').empty();
-  $('#statistic-table').append(
-    $('<thead>').append(
-      $('<tr>')
-        .append($('<th>').append(type))
-        .append($('<th>').append('Played'))
-        .append($('<th>').append('Clear'))
-        .append($('<th>').append('Hard Clear'))
-        .append($('<th>').append('UC'))
-        .append($('<th>').append('PUC'))
+    $('#statistic-table').empty();
+    $('#statistic-table').append(
+        $('<thead>').append(
+            $('<tr>').append(
+                $('<th>').append(
+                    type
+                )
+            ).append(
+                $('<th>').append(
+                    "Played"
+                )
+            ).append(
+                $('<th>').append(
+                    "EFFECTIVE CLEAR"
+                )
+            ).append(
+                $('<th>').append(
+                    "EXCESSIVE CLEAR"
+                )
+            ).append(
+                $('<th>').append(
+                    "MAXXIVE CLEAR"
+                )
+            ).append(
+                $('<th>').append(
+                    "UC"
+                )
+            ).append(
+                $('<th>').append(
+                    "PUC"
+                )
+            )
+        )
     )
   );
 }
@@ -402,11 +427,11 @@ function setUpStatistics() {
   baseTBodyGpD = $('<tbody>');
   baseTBodyASpL = $('<tbody>');
 
-  var CMpDArray = createArray(5, 5);
-  var CMpLArray = createArray(20, 5);
-  var GpDArray = createArray(5, 10);
-  var GpLArray = createArray(20, 10);
-  var ASpLArray = createArray(20, 2);
+    var CMpDArray = createArray(5, 6);
+    var CMpLArray = createArray(20, 6);
+    var GpDArray = createArray(5, 10);
+    var GpLArray = createArray(20, 10);
+    var ASpLArray = createArray(20, 2);
 
   score_db.forEach(function (currentValue, index, array) {
     //console.log(currentValue);
@@ -426,49 +451,126 @@ function setUpStatistics() {
     ][1] += currentValue.score;
   });
 
-  // console.log(CMpDArray);
-  // console.log(CMpLArray);
-  // console.log(GpDArray);
-  // console.log(GpLArray);
-  // console.log(ASpLArray);
-  for (var diff = 0; diff < 5; diff++) {
-    baseTBodyCMpD.append(
-      $('<tr>')
-        .append($('<th>').append(diffName[diff]))
-        .append($('<td>').append(CMpDArray[diff][0]))
-        .append($('<td>').append(CMpDArray[diff][1]))
-        .append($('<td>').append(CMpDArray[diff][2]))
-        .append($('<td>').append(CMpDArray[diff][3]))
-        .append($('<td>').append(CMpDArray[diff][4]))
-    );
-  }
-  for (var lv = 1; lv <= 20; lv++) {
-    baseTBodyCMpL.append(
-      $('<tr>')
-        .append($('<th>').append(lv))
-        .append($('<td>').append(CMpLArray[lv - 1][0]))
-        .append($('<td>').append(CMpLArray[lv - 1][1]))
-        .append($('<td>').append(CMpLArray[lv - 1][2]))
-        .append($('<td>').append(CMpLArray[lv - 1][3]))
-        .append($('<td>').append(CMpLArray[lv - 1][4]))
-    );
-  }
-  for (var diff = 0; diff < 5; diff++) {
-    baseTBodyGpD.append(
-      $('<tr>')
-        .append($('<th>').append(diffName[diff]))
-        .append($('<td>').append(GpDArray[diff][0]))
-        .append($('<td>').append(GpDArray[diff][1]))
-        .append($('<td>').append(GpDArray[diff][2]))
-        .append($('<td>').append(GpDArray[diff][3]))
-        .append($('<td>').append(GpDArray[diff][4]))
-        .append($('<td>').append(GpDArray[diff][5]))
-        .append($('<td>').append(GpDArray[diff][6]))
-        .append($('<td>').append(GpDArray[diff][7]))
-        .append($('<td>').append(GpDArray[diff][8]))
-        .append($('<td>').append(GpDArray[diff][9]))
-    );
-  }
+    // console.log(CMpDArray);
+    // console.log(CMpLArray);
+    // console.log(GpDArray);
+    // console.log(GpLArray);
+    // console.log(ASpLArray);
+    for (var diff = 0; diff < 5; diff++) {
+        baseTBodyCMpD.append(
+            $('<tr>').append(
+                $('<th>').append(
+                    diffName[diff]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpDArray[diff][0]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpDArray[diff][1]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpDArray[diff][2]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpDArray[diff][5]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpDArray[diff][3]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpDArray[diff][4]
+                )
+            )
+        )
+    }
+    for (var lv = 1; lv <= 20; lv++) {
+        baseTBodyCMpL.append(
+            $('<tr>').append(
+                $('<th>').append(
+                    lv
+                )
+            ).append(
+                $('<td>').append(
+                    CMpLArray[lv - 1][0]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpLArray[lv - 1][1]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpLArray[lv - 1][2]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpLArray[lv - 1][5]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpLArray[lv - 1][3]
+                )
+            ).append(
+                $('<td>').append(
+                    CMpLArray[lv - 1][4]
+                )
+            )
+        )
+    }
+    for (var diff = 0; diff < 5; diff++) {
+        baseTBodyGpD.append(
+            $('<tr>').append(
+                $('<th>').append(
+                    diffName[diff]
+                )
+            ).append(
+                $('<td>').append(
+                    GpDArray[diff][0]
+                )
+            ).append(
+                $('<td>').append(
+                    GpDArray[diff][1]
+                )
+            ).append(
+                $('<td>').append(
+                    GpDArray[diff][2]
+                )
+            ).append(
+                $('<td>').append(
+                    GpDArray[diff][3]
+                )
+            ).append(
+                $('<td>').append(
+                    GpDArray[diff][4]
+                )
+            ).append(
+                $('<td>').append(
+                    GpDArray[diff][5]
+                )
+            ).append(
+                $('<td>').append(
+                    GpDArray[diff][6]
+                )
+            ).append(
+                $('<td>').append(
+                    GpDArray[diff][7]
+                )
+            ).append(
+                $('<td>').append(
+                    GpDArray[diff][8]
+                )
+            ).append(
+                $('<td>').append(
+                    GpDArray[diff][9]
+                )
+            )
+        )
+    }
 
   for (var lv = 1; lv <= 20; lv++) {
     baseTBodyGpL.append(
@@ -762,9 +864,286 @@ $(document).ready(function () {
     $.getJSON('static/asset/json/customize_data_ext.json', function (json) {
       skill_title_db = json.skilltitle;
     })
-  ).then(function () {
-    var currentVF = calculateVolforce();
-    var maxVer = skill_data.length > 0 ? parseInt(skill_data[0]['version']) : 0;
+    // console.log(score_db);
+
+    // $('#test').append(
+    //     $('<div>').append(
+    //         profile_data["name"]
+    //     ).css('font-family', "testfont")
+    //     .css('font-size', "35px")
+    // )
+
+    $.when(
+        $.getJSON("static/asset/json/music_db.json", function(json) {
+            music_db = json;
+            // console.log(music_db);
+        }),
+        $.getJSON("static/asset/json/course_data.json", function(json) {
+            course_db = json;
+        }),
+        $.getJSON("static/asset/json/data.json", function(json) {
+            data_db = json;
+        }),
+        $.getJSON("static/asset/json/appeal.json", function(json) {
+            appeal_db = json;
+            //console.log(appeal_db);
+        }),
+        $.getJSON("static/asset/json/customize_data_ext.json", function(json) {
+            skill_title_db = json.skilltitle;
+        }),
+    ).then(function() {
+        var currentVF = calculateVolforce();
+        var maxVer = skill_data.length > 0 ? parseInt(skill_data[0]["version"]) : 0
+
+        var versionInfo = getVersionSelect();
+        if(versionInfo.length <= 0) {
+            $('#version_select').append(
+                $('<option>', {
+                    value: 0,
+                    text: 'No data found',
+                })
+            )
+            $('#version_select').attr('disabled', 'disabled')
+        } else {
+            for (var i = 0; i < versionInfo.length; i++) {
+                console.log(versionInfo[i])
+                $('#version_select').append(
+                    $('<option>', {
+                        value: versionInfo[i],
+                        text: versionText[versionInfo[i]],
+                    })
+                )
+            }
+        }
+
+        $('#test').append(
+            $('<div class="card is-inlineblocked" style="padding-bottom:30px">').append(
+                $('<div class="card-header">').append(
+                    $('<p class="card-header-title">').append(
+                        $('<span class="icon">').append(
+                            $('<i class="mdi mdi-account-edit">')
+                        )
+                    ).append("Basic Data")
+                )
+            ).append(
+                $('<div class="card-content">').append(
+                    $('<div class="tile is-ancestor is-centered">').append(
+                        $('<div class="tile is-parent is-3">').append(
+                            $('<article class="tile is-child">').append(
+                                $('<img>').attr('src', getAppealCard(profile_data.appeal))
+                                .css('width', '150px')
+                            ).css('vertical-align', 'middle')
+                        )
+                    ).append(
+                        $('<div class="tile is-parent is-6">').append(
+                            $('<article class="tile is-child">').append(
+                                $('<div>').append(
+                                    $('<div>').append("Player Name:").css('font-size', '15').append($('<br>'))
+                                ).append(
+                                    $('<div>').append(profile_data["name"]).css('font-size', "35px")
+                                ).append(
+                                    $('<div>').append("Appeal Title:").css('font-size', '15')
+                                ).append(
+                                    $('<div>').append(getAkaname(profile_data["akaname"])).css('font-size', "35px")
+                                )
+                                .css('font-family', "testfont,ffff")
+                            )
+                        )
+                    ).append(
+                        $('<div class="tile is-parent is-3">').append(
+                            $('<article class="tile is-child is-centered">').append(
+                                $('<div>').append(
+                                    $('<img>').attr('src', getVFAsset(currentVF)).css('width', '7em')
+                                    .css('margin', '0 auto')
+                                ).append(
+                                    $('<div>').append(
+                                        currentVF
+                                    ).css('font-family', "testfont")
+                                    .css('font-size', "35px")
+                                    .css('text-align', 'center')
+                                )
+                                .css('vertical-align', 'middle')
+                                .css('min-height', '100%')
+                                .css('height', '100%')
+                            )
+                        )
+                    )
+                ).append(
+                    $('<div>').append(
+                        
+                    ).append(
+                        
+                    ).append(
+                        
+                    ).css("display", "table")
+                    .css('width', '100%')
+                    .css('text-align', 'left')
+                ).css('width', '100%')
+            ).css('vertical-align', 'top')
+            .css('max-width', '100%')
+            .append(
+                $('<div class="card-content">').append(
+                    $('<div class="tile is-ancestor">').append(
+                        $('<div class="tile is-parent is-7">').append(
+                            $('<article class="tile is-child">').append(
+                                $('<div class="content" style="position: relative;display: flex;justify-content: center;align-items: center;">').append(
+                                    $('<img id="skillLV">').attr('src', getSkillAsset(getPlayerSkill(maxVer)[0]))
+                                ).append(
+                                    $('<div style="position:absolute;width:100%;height:100%display: flex;justify-content: center;align-items: center;">').append(
+                                        $('<img id="skillFrame" style="height:100%">')
+                                    )
+                                ).append(
+                                    $('<div style="position:absolute;padding-left:20px;width:100%;height:100%;display: flex;justify-content: center;align-items: center;">').append(
+                                        $('<p id="skillTitle"></p>')
+                                    )
+                                )
+                            )
+                        )
+                    ).append(
+                        $('<div class="tile is-parent is-5">').append(
+                            $('<article class="tile is-child">').append(
+                                $('<p class="title">').append(
+                                    "PCB"
+                                ).append(
+                                    $('<div class="content">').append(
+                                        profile_data.blocks
+                                    )
+                                ).css('font-family', "testfont") 
+                            )
+                        )
+                    ).css('vertical-align', 'middle')
+                )
+            )
+        ).append(
+            $('<div class="card  is-inlineblocked">').append(
+                $('<div class="card-header">').append(
+                    $('<p class="card-header-title">').append(
+                        $('<span class="icon">').append(
+                            $('<i class="mdi mdi-pulse">')
+                        )
+                    ).append("Arena Stats")
+                )
+            ).append(
+                $('<div class="card-content">').append(
+                    $('<div class="tile is-ancestor">').append(
+                        $('<div class="tile is-parent">').append(
+                            $('<div class="tile is-child field">').append(
+                                $('<div class="control">').append(
+                                    $('<div class="select">').append(
+                                        $('<select id="arena-szn-sel">')
+                                    )
+                                )
+                            )
+                        )
+                    ).css('vertical-align', 'middle')
+                ).append(
+                    $('<div class="tile is-ancestor is-centered">').append(
+                        $('<div class="tile is-parent arena-details">')
+                    )
+                )
+            )
+
+        )
+        .append(
+            $('<div class="card">').append(
+                $('<div class="card-header">').append(
+                    $('<p class="card-header-title">').append(
+                        $('<span class="icon">').append(
+                            $('<i class="mdi mdi-pulse">')
+                        )
+                    ).append("Statistics")
+                )
+            ).append(
+                $('<div class="card-content">').append(
+                    $('<div class="tabs is-toggle is-paddingless is-centered is-fullwidth">').append(
+                        $('<ul class="is-marginless">').append(
+                            $('<li class="is-active" name="cmpd">').append(
+                                $('<a onclick="setCMpD()">').append(
+                                    "Clear Mark per Difficulty"
+                                )
+                            )
+                        ).append(
+                            $('<li name="cmpl">').append(
+                                $('<a onclick="setCMpL()">').append(
+                                    "Clear Mark per Level"
+                                )
+                            )
+                        ).append(
+                            $('<li name="gpd">').append(
+                                $('<a onclick="setGpD()">').append(
+                                    "Grade per Difficulty"
+                                )
+                            )
+                        ).append(
+                            $('<li name="gpl">').append(
+                                $('<a onclick="setGpL()">').append(
+                                    "Grade per Level"
+                                )
+                            )
+                        ).append(
+                            $('<li name="aspl">').append(
+                                $('<a onclick="setASpL()">').append(
+                                    'Average Score per Level'
+                                )
+                            )
+                        )
+                    )
+                ).append(
+                    $('<hr>')
+                ).append(
+                    $('<div class="tile is-ancestor">').append(
+                        $('<div class="tile is-parent">').append(
+                            $('<article class="tile is-child">').append(
+                                // $('<div class="table-container">').append(
+                                    $('<table class="table mx-auto is-fullwidth is-hoverable" id="statistic-table">')
+                                    .css('margin-left', 'auto')
+                                    .css('margin-right', 'auto')
+                                    // .css('width', '100%')
+                                // )
+                            )//.css('text-align', 'center')
+                             .css('overflow-x', 'auto')
+                        )
+                    )
+                    
+                )
+            )
+        )
+
+        arena_data = arena_data.sort(function(a,b) { return a['season'] - b['season'] } )
+        if(arena_data.length <= 0) {
+            $('#arena-szn-sel').append(
+                $('<option>', {
+                    value: 0,
+                    text: 'No available arena data.',
+                })
+            )
+            $('#arena-szn-sel').attr('disabled', 'disabled')
+        } else {
+            arena_data.forEach(are => {
+                $('#arena-szn-sel').append(
+                    $('<option>', {
+                        value: are['season'],
+                        text: 'Season: ' + are['season'],
+                    })
+                )
+            })
+        }
+
+        $('#arena-szn-sel').change(function() {
+            $('.arena-details').empty()
+            displayArenaSeasonData($('#arena-szn-sel').val())
+        });
+
+        let skillFrame = getPlayerCourse(maxVer, getPlayerSkill(maxVer))
+        if(skillFrame !== 'none') $('#skillFrame').attr('src', getSkillFrameAsset(skillFrame))
+        $('#skillTitle').text(getSkillTitle())
+        $('#skillTitle').attr('style', 'font-size:25px; color:black; font-weight:bold;color:' + (getPlayerSkill(maxVer)[0] === 11 ? '#FFC100' : ((getPlayerSkill(maxVer)[0] === 12) ? '#FFE000' : "black")))
+
+        setUpStatistics();
+        setCMpD();
+        displayArenaSeasonData($('#arena-szn-sel').val())
+
+        $('.dots').fadeOut(400, function() {
 
     var versionInfo = getVersionSelect();
     if (versionInfo.length <= 0) {
